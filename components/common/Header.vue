@@ -1,0 +1,641 @@
+<script setup>
+import { getHeaderData } from '~/api/api/base.js'
+
+const dataBase = ref()
+const [result, data] = await getHeaderData()
+dataBase.value = data
+
+const menuToggle = () => {
+  const menu = document.querySelector('header ul.nav')
+  const menuBtn = document.querySelector('.menu_btn')
+  const activeClass = 'active'
+
+  if (menu.classList.contains(activeClass)) {
+    menu.classList.remove(activeClass)
+    menuBtn.classList.remove(activeClass)
+  } else {
+    menu.classList.add(activeClass)
+    menuBtn.classList.add(activeClass)
+  }
+}
+
+// const menuItemToggle = (event) => {
+//   const menu = event.currentTarget.nextElementSibling;
+//   const activeClass = 'active';
+
+//   if (menu.classList.contains(activeClass)) {
+//     menu.classList.remove(activeClass);
+//   } else {
+//     const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu');
+//     allMenus.forEach((item) => {
+//       item.classList.remove(activeClass);
+//     });
+//     menu.classList.add(activeClass);
+//   }
+// }
+</script>
+<template>
+  <header>
+    <div class="nav_top">
+      <div class="menu_btn" @click="menuToggle()">
+        <font-awesome-icon icon="bars" />
+      </div>
+      <div class="logo">
+        <NuxtLink to="/">
+          <img src="@/assets/common/logo.png" alt="" />
+        </NuxtLink>
+      </div>
+      <ul class="toolbar">
+        <li class="member_bar">
+          <a><font-awesome-icon icon="user" /></a>
+          <div class="dropDown">
+            <div class="login_info">
+              <a href="./login.html">會員登入</a>
+              <a href="./regist_index.html">註冊新會員</a>
+            </div>
+          </div>
+        </li>
+        <li class="cart_bar">
+          <a
+            ><font-awesome-icon icon="cart-shopping" /><span class="num"
+              >0</span
+            ></a
+          >
+          <div class="dropDown">
+            <div class="cart_info">
+              <div class="list">
+                <div class="item">
+                  <div class="image">
+                    <img src="@/assets/index/product.png" alt="" />
+                  </div>
+                  <div class="text">
+                    <div class="name">
+                      本期07月每刊好物(2107 -02)美髮轉燈水槍
+                    </div>
+                    <div class="qty"><label for="">數量:</label>1</div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="image">
+                    <img src="@/assets/index/product.png" alt="" />
+                  </div>
+                  <div class="text">
+                    <div class="name">
+                      本期07月每刊好物(2107 -02)美髮轉燈水槍
+                    </div>
+                    <div class="qty"><label for="">數量:</label>1</div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="image">
+                    <img src="@/assets/index/product.png" alt="" />
+                  </div>
+                  <div class="text">
+                    <div class="name">
+                      本期07月每刊好物(2107 -02)美髮轉燈水槍
+                    </div>
+                    <div class="qty"><label for="">數量:</label>1</div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="image">
+                    <img src="@/assets/index/product.png" alt="" />
+                  </div>
+                  <div class="text">
+                    <div class="name">
+                      本期07月每刊好物(2107 -02)美髮轉燈水槍
+                    </div>
+                    <div class="qty"><label for="">數量:</label>1</div>
+                  </div>
+                </div>
+              </div>
+              <a class="to_cart" href="./cart.html">立即結帳</a>
+            </div>
+          </div>
+        </li>
+        <li class="search_bar">
+          <a><font-awesome-icon icon="magnifying-glass" /></a>
+          <div class="dropDown">
+            <form action="">
+              <input type="text" placeholder="請輸入產品名" />
+              <button>搜尋</button>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <ul class="nav">
+      <li class="sub" v-for="(item, index) in dataBase" :key="index">
+        <a href="#" @click="menuItemToggle($event)">{{ item.lname }}</a>
+        <ul class="sub_menu" >
+          <li v-for="(sub, i) in item.sub" :key="i">
+            <NuxtLink :to="sub.lurl">{{ sub.lname }}</NuxtLink>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </header>
+</template>
+
+<style lang="scss" scoped>
+header {
+  border-top: 60px solid #82cbc4;
+
+  .nav_top {
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    .menu_btn {
+      display: none;
+    }
+
+    .logo {
+      width: 150px;
+
+      a {
+        display: block;
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    ul.toolbar {
+      position: absolute;
+      top: 50%;
+      right: 60px;
+      transform: translateY(-50%);
+      display: flex;
+      list-style: none;
+      font-size: 2rem;
+      border-left: 1px dotted #333;
+      padding-left: 20px;
+      margin-bottom: 0;
+      z-index: 3;
+
+      li {
+        margin-right: 20px;
+        position: relative;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        a {
+          color: #333;
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            opacity: 0.8;
+          }
+
+          span.num {
+            width: 25px;
+            height: 25px;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #82cbc4;
+            color: #fff;
+            font-size: 0.8rem;
+            margin-left: 5px;
+            padding-left: 3px;
+          }
+        }
+
+        .dropDown {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 300px;
+          border: 1px solid #bbb;
+          padding: 10px 20px;
+          background-color: #fff;
+          display: none;
+          z-index: 4;
+
+          &.active {
+            display: block;
+          }
+
+          form {
+            width: 100%;
+            display: flex;
+            align-items: center;
+
+            input {
+              flex: 1;
+              min-width: 0;
+              font-size: 1rem;
+              margin-right: 10px;
+              outline: none;
+              border: 1px solid #bbb;
+              padding: 3px 10px;
+            }
+
+            button {
+              font-size: 1rem;
+              border: none;
+              background-color: #82cbc4;
+              color: #fff;
+              padding: 5px 15px;
+              border-radius: 5px;
+            }
+          }
+
+          .cart_info {
+            display: block;
+
+            .list {
+              display: block;
+              margin-bottom: 20px;
+
+              .item {
+                display: flex;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+                border-bottom: 1px solid #333;
+
+                &:last-child {
+                  padding-bottom: 0;
+                  margin-bottom: 0;
+                  border: none;
+                }
+
+                .image {
+                  flex: 0 0 50px;
+                  margin-right: 10px;
+                }
+
+                .text {
+                  font-size: 1rem;
+
+                  .name {
+                    margin-bottom: 5px;
+                  }
+
+                  .qty label {
+                    margin-bottom: 0;
+                  }
+                }
+              }
+            }
+
+            .to_cart {
+              font-size: 1rem;
+              background-color: #82cbc4;
+              text-align: center;
+              display: block;
+              color: #fff;
+              padding: 10px 0;
+              border-radius: 20px;
+            }
+          }
+
+          .login_info {
+            display: block;
+
+            a {
+              width: 100%;
+              border-radius: 5px;
+              border: 1px solid #abb4bb;
+              font-size: 1.25rem;
+              text-align: center;
+              display: block;
+              margin-bottom: 10px;
+              padding: 5px 0;
+              color: #fff;
+
+              &:first-child {
+                background-color: #abb4bb;
+
+                &:hover {
+                  background-color: #86919b;
+                }
+              }
+
+              &:last-child {
+                background-color: #fff;
+                margin-bottom: 0;
+                border-color: #82cbc4;
+                color: #82cbc4;
+
+                &:hover {
+                  background-color: #82cbc4;
+                  color: #fff;
+                }
+              }
+            }
+          }
+
+          .member_nav {
+            ul {
+              list-style: none;
+              padding-left: 0;
+              font-size: 1.25rem;
+
+              li {
+                margin-right: 0;
+                padding-bottom: 5px;
+                border-bottom: 1px dotted #707070;
+                margin-bottom: 10px;
+
+                a {
+                  color: #333;
+                }
+              }
+            }
+
+            button {
+              background-color: #82cbc4;
+              color: #fff;
+              font-size: 1.25rem;
+              padding: 7px 0;
+              width: 100%;
+              border: none;
+              border-radius: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  ul.nav {
+    background-color: #82cbc4;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 2rem;
+    padding: 0 15px;
+    list-style: none;
+
+    > li {
+      margin-right: 30px;
+      position: relative;
+      padding: 20px 0;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      a {
+        color: #fff;
+        text-decoration: none;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      > ul.sub_menu {
+        position: absolute;
+        top: 100%;
+        left: -20px;
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+        background-color: #82cbc4;
+        font-size: 1.5rem;
+        padding: 10px 5px;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition-duration: 0.3s;
+        width: calc(100% + 40px);
+        text-align: center;
+        z-index: 2;
+
+        li {
+          margin-bottom: 10px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      &:hover > ul.sub_menu {
+        transform: scaleY(1);
+      }
+    }
+  }
+}
+
+@media (max-width: 1700px) {
+  header {
+    ul.nav {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+@media (max-width: 1500px) {
+  header {
+    border-width: 40px;
+
+    .nav_top {
+      .logo {
+        width: 130px;
+      }
+
+      ul.toolbar {
+        font-size: 1.75rem;
+
+        li {
+          margin-right: 15px;
+
+          a {
+            span.num {
+              width: 23px;
+              height: 23px;
+              font-size: 0.75rem;
+            }
+          }
+        }
+      }
+    }
+
+    ul.nav {
+      font-size: 1.5rem;
+
+      > li {
+        margin-right: 20px;
+
+        > ul.sub_menu {
+          font-size: 1.15rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1300px) {
+  header {
+    border-width: 20px;
+
+    .nav_top {
+      .logo {
+        width: 110px;
+      }
+    }
+
+    ul.nav {
+      font-size: 1.25rem;
+
+      > li {
+        > ul.sub_menu {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  body::-webkit-scrollbar {
+    width: 0;
+  }
+
+  header {
+    border: none;
+    background-color: #82cbc4;
+    position: relative;
+
+    .nav_top {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      position: unset;
+
+      .menu_btn {
+        display: block;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .logo {
+        width: 40px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      ul.toolbar {
+        position: unset;
+        top: unset;
+        right: unset;
+        border: none;
+        font-size: 1.25rem;
+        transform: translateY(0);
+
+        li {
+          position: unset;
+          margin-right: 10px;
+
+          a {
+            color: #fff;
+
+            &:hover {
+              opacity: 0.8;
+              color: #fff;
+            }
+
+            span.num {
+              background-color: #fff;
+              color: #82cbc4;
+              width: 20px;
+              height: 20px;
+              padding-left: 2px;
+              margin-left: 0;
+            }
+          }
+
+          &.active {
+            .dropDown {
+              width: 100vw;
+              top: calc(100% + 15px);
+              right: -15px;
+              padding: 10px 15px;
+            }
+          }
+        }
+      }
+    }
+
+    ul.nav {
+      position: absolute;
+      left: 0;
+      top: 100%;
+      width: 100%;
+      display: block;
+      padding: 0;
+      border-top: 1px solid #fff;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition-duration: 0.3s;
+      z-index: 3;
+
+      &.active {
+        transform: scaleY(1);
+      }
+
+      > li {
+        margin-right: 0;
+        padding: 0;
+
+        > a {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          padding: 10px 15px;
+          border-bottom: 1px solid #fff;
+
+          &.sub::after {
+            content: '\f0dd';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 700;
+          }
+        }
+
+        > ul.sub_menu {
+          position: relative;
+          left: 0;
+          width: 100%;
+          transform: scaleY(1);
+          text-align: left;
+          padding: 0;
+          font-size: 1.25rem;
+          display: none;
+
+          &.active {
+            display: block;
+          }
+
+          li {
+            margin-bottom: 0;
+
+            > a {
+              display: block;
+              padding: 10px 36px;
+              border-bottom: 1px solid #fff;
+
+              &:last-child {
+                border: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
