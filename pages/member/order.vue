@@ -46,7 +46,7 @@ definePageMeta({
             <div class="c_body">
               <div class="c_tr">
                 <div class="c_td img">
-                  <img src="./images/member/product.png" alt="" />
+                  <img src="@/assets/member/product.png" alt="" />
                 </div>
                 <div class="c_td">
                   本期07月每刊好物美髮轉本期07月每刊好物美髮轉 燈水槍
@@ -59,7 +59,7 @@ definePageMeta({
               </div>
               <div class="c_tr">
                 <div class="c_td img">
-                  <img src="./images/member/product.png" alt="" />
+                  <img src="@/assets/member/product.png" alt="" />
                 </div>
                 <div class="c_td">
                   本期07月每刊好物(2107-02)美髮轉 燈水槍
@@ -72,7 +72,7 @@ definePageMeta({
               </div>
               <div class="c_tr">
                 <div class="c_td img">
-                  <img src="./images/member/product.png" alt="" />
+                  <img src="@/assets/member/product.png" alt="" />
                 </div>
                 <div class="c_td">
                   本期07月每刊好物(2107-02)美髮轉 燈水槍
@@ -127,7 +127,7 @@ definePageMeta({
             <div class="c_body">
               <div class="c_tr">
                 <div class="c_td img">
-                  <img src="./images/member/product.png" alt="" />
+                  <img src="@/assets/member/product.png" alt="" />
                 </div>
                 <div class="c_td">
                   本期07月每刊好物(2107-02)美髮轉 燈水槍
