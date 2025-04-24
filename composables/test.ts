@@ -1,4 +1,4 @@
-const urlBase = 'http://localhost:8080/IU_web/';
+const urlBase = 'http://api.e-office.tw/';
 
 export {
   urlBase
