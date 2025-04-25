@@ -1,5 +1,5 @@
 <script setup>
-import pager from '~/components/tools/pager.vue'
+import pager from '~/components/Common/pager.vue'
 
 definePageMeta({
   layout: 'member',

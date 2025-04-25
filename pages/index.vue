@@ -11,14 +11,12 @@ const changeLayoutName = (layout) => {
   switch (layout) {
     case 'n':
       return resolveComponent('IndexNews')
-    case 'g':
-      return resolveComponent('IndexAdv')
     case 'a':
       return resolveComponent('IndexAdv')
     case 'p':
       return resolveComponent('IndexProduct')
-    case 'icon':
-      return resolveComponent('IndexIcon')
+    case 'g':
+      return resolveComponent('IndexFree')
     case 'y':
       return resolveComponent('IndexBrand')
     default:

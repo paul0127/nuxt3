@@ -16,9 +16,9 @@ const props = defineProps({
     </div>
     <div class="list">
       <div class="item" v-for="item in layoutData.list" :key="item.id">
-        <a class="image">
+        <NuxtLink class="image" :to="`/brand/${item.id}`">
           <img :src="`${urlBase}${item.pic}`" alt="" />
-        </a>
+        </NuxtLink>
       </div>
     </div>
   </div>

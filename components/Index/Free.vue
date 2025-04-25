@@ -1,24 +1,33 @@
+<script setup>
+const props = defineProps({
+  layoutData: {
+    type: Object,
+    default: () => ({}),
+  },
+})
+const content = ref()
+content.value= props.layoutData.qt.replace(
+  '/ckfinder/',
+  `${urlBase}/ckfinder/`
+)
+</script>
 <template>
-    <div class="index_icon">
-        <div class="item">
-          <div class="icon"><font-awesome-icon icon="thumbs-up" /></div>
-          <div class="name">一年保固 終身保修</div>
-        </div>
-        <div class="item">
-          <div class="icon"><font-awesome-icon icon="gift" /></div>
-          <div class="name">不定期會員專屬優惠</div>
-        </div>
-        <div class="item">
-          <div class="icon"><font-awesome-icon icon="info" /></div>
-          <div class="name">電器均有商檢合格標籤</div>
-        </div>
-    </div>
+  <div class="index_icon">
+    <div class="content" v-html="content" />
+  </div>
 </template>
 <style lang="scss" scoped>
 /* 首頁icon */
 .index_icon {
   display: flex;
   padding-bottom: 45px;
+  .content{
+    width: 100%;
+    :deep(img){
+      width: 100%;
+      height: auto !important;
+    }
+  }
 
   .item {
     flex: 0 0 33.33%;

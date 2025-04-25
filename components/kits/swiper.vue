@@ -29,13 +29,32 @@
 <template>
     <div>
         <swiper
+            class="mySwiper"
             :modules="modules"
             :slides-per-view="1"
             :space-between="0"
             @swiper="onSwiper"
             @slideChange="onSlideChange"
         >
-            <swiper-slide v-for="item in list" :key="item.id"><img :src="item.img" alt="" /></swiper-slide>
+            <swiper-slide v-for="item in list" :key="item.id">
+                <NuxtLink :to="item.link" class="image">
+                    <img :src="item.img" alt="" />
+                </NuxtLink>
+            </swiper-slide>
         </swiper>
     </div>
 </template>
+<style lang="scss" scoped>
+.mySwiper{
+    .swiper-slide{
+        .image{
+            cursor: pointer;
+            margin-bottom: 15px;
+            img{
+                width: 100%;
+                height: auto;
+            }
+        }
+    }
+}
+</style>
