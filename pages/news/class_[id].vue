@@ -1,5 +1,5 @@
 <script setup>
-import pager from '~/components/Common/pager.vue'
+import pager from '~/components/common/pager.vue'
 import Title from '~/components/common/Title.vue'
 
 import { getNewsList } from '~/api/api/news.js'
