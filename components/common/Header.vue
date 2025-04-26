@@ -33,6 +33,43 @@ const menuToggle = () => {
 //     menu.classList.add(activeClass);
 //   }
 // }
+const router = useRouter()
+const memberBtnToggle = ref(false)
+const cartBtnToggle = ref(false)
+const searchBtnToggle = ref(false)
+
+const allClose = () => {
+  memberBtnToggle.value = false
+  cartBtnToggle.value = false
+  searchBtnToggle.value = false
+}
+
+const btnToggle = (btn) => {
+  let menu = false
+  if (btn === 'member') {
+    menu = memberBtnToggle.value
+  } else if (btn === 'cart') {
+    menu = cartBtnToggle.value
+  } else if (btn === 'search') {
+    menu = searchBtnToggle.value
+  } 
+
+  allClose()
+  
+  if (btn === 'member') {
+    console.log('memberBtnToggle', memberBtnToggle.value) 
+    memberBtnToggle.value = !menu
+  } else if (btn === 'cart') {
+    cartBtnToggle.value = !menu
+  } else if (btn === 'search') {
+    searchBtnToggle.value = !menu
+  }
+}
+
+const goTo = (url) => {
+  router.push(url)
+  allClose()
+}
 </script>
 <template>
   <header>
@@ -47,21 +84,21 @@ const menuToggle = () => {
       </div>
       <ul class="toolbar">
         <li class="member_bar">
-          <a><font-awesome-icon icon="user" /></a>
-          <div class="dropDown">
+          <a @click="btnToggle('member')"><font-awesome-icon icon="user" /></a>
+          <div class="dropDown" :class="{ active: memberBtnToggle }">
             <div class="login_info">
-              <a href="./login.html">會員登入</a>
-              <a href="./regist_index.html">註冊新會員</a>
+              <NuxtLink @click="goTo('/login')">會員登入</NuxtLink>
+              <NuxtLink @click="goTo('/register')" href="./regist_index.html">註冊新會員</NuxtLink>
             </div>
           </div>
         </li>
         <li class="cart_bar">
-          <a
+          <a @click="btnToggle('cart')"
             ><font-awesome-icon icon="cart-shopping" /><span class="num"
               >0</span
             ></a
           >
-          <div class="dropDown">
+          <div class="dropDown" :class="{ active: cartBtnToggle }">
             <div class="cart_info">
               <div class="list">
                 <div class="item">
@@ -109,13 +146,13 @@ const menuToggle = () => {
                   </div>
                 </div>
               </div>
-              <a class="to_cart" href="./cart.html">立即結帳</a>
+              <a @click="goTo('/cart')" class="to_cart">立即結帳</a>
             </div>
           </div>
         </li>
         <li class="search_bar">
-          <a><font-awesome-icon icon="magnifying-glass" /></a>
-          <div class="dropDown">
+          <a @click="btnToggle('search')"><font-awesome-icon icon="magnifying-glass" /></a>
+          <div class="dropDown" :class="{ active: searchBtnToggle }">
             <form action="">
               <input type="text" placeholder="請輸入產品名" />
               <button>搜尋</button>
@@ -127,8 +164,8 @@ const menuToggle = () => {
 
     <ul class="nav">
       <li class="sub" v-for="(item, index) in dataBase" :key="index">
-        <a href="#" @click="menuItemToggle($event)">{{ item.lname }}</a>
-        <ul class="sub_menu" >
+        <NuxtLink v-if="item.sub && item.sub.length>0" :to="item.sub[0].lurl" @click="menuItemToggle($event)">{{ item.lname }}</NuxtLink>
+        <ul class="sub_menu" v-if="item.sub.length>1">
           <li v-for="(sub, i) in item.sub" :key="i">
             <NuxtLink :to="sub.lurl">{{ sub.lname }}</NuxtLink>
           </li>

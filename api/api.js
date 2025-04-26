@@ -12,7 +12,7 @@ export async function post(url, params={}) {
     const { data, status, error, refresh } = await useFetch(url, {
         method: 'POST',
         baseURL: `${urlBase}`,
-        params: params,
+        body: params,
     })
 
     return [status, data.value.data]

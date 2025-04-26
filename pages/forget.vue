@@ -1,23 +1,15 @@
 <script setup>
-import { getLogin } from '~/api/api/login.js'
-import Title from '~/components/common/Title.vue'
-useHead({
-  title: '會員登入',
-  meta: [{ name: 'description', content: '會員登入' }],
-})
-
 const input = ref({
   email: '',
-  password: '',
 })
 
-const login = async () => {
-  const [result,data] = await getLogin(input.value)
-  if (result) {
-    console.log('登入成功')
-  } else {
-    console.log('登入失敗')
-  }
+const send = async () => {
+//   const [result, data] = await getForget(input.value)
+//   if (result) {
+//     console.log('寄送成功')
+//   } else {
+//     console.log('寄送失敗')
+//   }
 }
 </script>
 <template>
@@ -36,35 +28,21 @@ const login = async () => {
           <font-awesome-icon class="icon-left" :icon="['fab', 'pagelines']" />
           <div class="title_inner">
             <div class="b_title">MEMBER</div>
-            <div class="s_title">會員登入</div>
+            <div class="s_title">忘記密碼</div>
           </div>
           <font-awesome-icon class="icon-right" :icon="['fab', 'pagelines']" />
         </div>
-        <ul class="social_btns">
-          <li class="line_btn">
-            <font-awesome-icon :icon="['fab', 'line']" />
-          </li>
-          <li class="fb_btn">
-            <font-awesome-icon :icon="['fab', 'square-facebook']" />
-          </li>
-        </ul>
         <div class="inputs">
           <div class="input">
-            <label for="">帳號/Email</label
-            ><input type="text" v-model="input.email" placeholder="請輸入您的信箱" />
-          </div>
-          <div class="input">
-            <label for="">密碼</label
-            ><input type="password" v-model="input.password" placeholder="請輸入您的密碼" />
+            <label for="">請輸入您註冊的信箱</label
+            ><input
+              type="text"
+              v-model="input.email"
+              placeholder="請輸入您註冊的信箱"
+            />
           </div>
         </div>
-        <ul class="login_btns">
-          <li><NuxtLink to="/forget">忘記密碼?</NuxtLink></li>
-          <li><NuxtLink to="/register">會員註冊</NuxtLink></li>
-        </ul>
-        <button class="send" @click="login">
-          LOGIN 登入
-        </button>
+        <button class="send" @click="send">送出</button>
       </div>
     </div>
   </div>

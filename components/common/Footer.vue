@@ -1,48 +1,81 @@
+<script setup>
+import { getFooterData } from '~/api/api/base.js'
+
+const dataBase = ref()
+const [result, data] = await getFooterData()
+dataBase.value = data
+</script>
 <template>
-        <footer>
-      <div class="container custom">
-        <div class="foot_left">
-          <div class="foot_logo">
-            <a href="#"><img src="@/assets/common/logo.png" alt="" /></a>
-          </div>
-          <div class="copyright">©2021 台灣IU版權所有</div>
-          <ul class="social">
-            <li>
-              <a href="#"><font-awesome-icon :icon="['fab', 'square-facebook']" /></a>
+  <footer>
+    <div class="container custom">
+      <div class="foot_left">
+        <div class="foot_logo">
+          <a href="#"><img src="@/assets/common/logo.png" alt="" /></a>
+        </div>
+        <div class="copyright">©2021 台灣IU版權所有</div>
+        <ul class="social">
+          <li v-if="dataBase.fb_url">
+            <NuxtLink :to="dataBase.fb_url"
+              ><font-awesome-icon :icon="['fab', 'square-facebook']"
+            /></NuxtLink>
+          </li>
+          <li v-if="dataBase.line_url">
+            <NuxtLink :to="dataBase.line_url"
+              ><font-awesome-icon :icon="['fab', 'line']"
+            /></NuxtLink>
+          </li>
+          <li v-if="dataBase.ig_url">
+            <NuxtLink :to="dataBase.ig_url"
+              ><font-awesome-icon :icon="['fab', 'instagram']"
+            /></NuxtLink>
+          </li>
+          <li v-if="dataBase.yt_url">
+            <NuxtLink :to="dataBase.yt_url"
+              ><font-awesome-icon :icon="['fab', 'youtube']"
+            /></NuxtLink>
+          </li>
+        </ul>
+      </div>
+      <div class="foot_right">
+        <div class="column">
+          <div class="title">關於我們</div>
+          <ul>
+            <li v-if="dataBase.tel">
+              <font-awesome-icon :icon="['fas', 'phone-volume']" />{{
+                dataBase.tel
+              }}
             </li>
-            <li>
-              <a href="#"><font-awesome-icon :icon="['fab', 'line']" /></a>
+            <li v-if="dataBase.fax">
+              <font-awesome-icon :icon="['fas', 'fax']" />{{ dataBase.fax }}
             </li>
-            <li>
-              <a href="#"><font-awesome-icon :icon="['fab', 'instagram']" /></a>
+            <li v-if="dataBase.email">
+              <font-awesome-icon :icon="['fas', 'envelope']" />{{
+                dataBase.email
+              }}
             </li>
-            <li>
-              <a href="#"><font-awesome-icon :icon="['fab', 'youtube']" /></a>
+            <li v-if="dataBase.addr">
+              <font-awesome-icon :icon="['fas', 'address-book']" />{{
+                dataBase.addr
+              }}
+            </li>
+            <li v-if="dataBase.open_time">
+              <font-awesome-icon :icon="['fas', 'clock']" />{{
+                dataBase.open_time
+              }}
             </li>
           </ul>
         </div>
-        <div class="foot_right">
-          <div class="column">
-            <div class="title">關於我們</div>
-            <ul>
-              <li><font-awesome-icon :icon="['fas', 'phone-volume']" />02-123456789</li>
-              <li><font-awesome-icon :icon="['fas', 'fax']" />02-123456789</li>
-              <li><font-awesome-icon :icon="['fas', 'envelope']" />xxxx@gmail.com</li>
-              <li><font-awesome-icon :icon="['fas', 'address-book']" />新北市xxx區xxx路xx號</li>
-              <li><font-awesome-icon :icon="['fas', 'clock']" />周一至周五am9：00-pm18：00</li>
-            </ul>
-          </div>
-          <div class="column">
-            <div class="title">常見問題</div>
-            <ul>
-              <li><a href="#">我的帳戶</a></li>
-              <li><a href="#">付款方式</a></li>
-              <li><a href="#">員購購物流程</a></li>
-            </ul>
-          </div>
+        <div class="column">
+          <div class="title">常見問題</div>
+          <ul>
+            <li><a href="#">我的帳戶</a></li>
+            <li><a href="#">付款方式</a></li>
+            <li><a href="#">員購購物流程</a></li>
+          </ul>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
 </template>
 <style lang="scss" scoped>
 footer {
