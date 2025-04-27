@@ -26,6 +26,7 @@ const breads = reactive([
         <Footer />
     </div>
 </template>
+<style lang="scss" src="./default.scss" />
 <style lang="scss" scoped>
 .page.member {
     display: flex;

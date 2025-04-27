@@ -1,8 +1,8 @@
 <script setup>
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} - IUBP` : 'IUBP'
-  },
+    return titleChunk ? `${titleChunk} - IUBP` : 'IUBP';
+  }
 })
 </script>
 <template>
