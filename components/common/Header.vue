@@ -5,6 +5,11 @@ const dataBase = ref()
 const [result, data] = await getHeaderData()
 dataBase.value = data
 
+const store = authStore()
+const isLogin = computed(() => {
+  return store.isLoggedIn
+})
+
 const menuToggle = () => {
   const menu = document.querySelector('header ul.nav')
   const menuBtn = document.querySelector('.menu_btn')
@@ -52,12 +57,12 @@ const btnToggle = (btn) => {
     menu = cartBtnToggle.value
   } else if (btn === 'search') {
     menu = searchBtnToggle.value
-  } 
+  }
 
   allClose()
-  
+
   if (btn === 'member') {
-    console.log('memberBtnToggle', memberBtnToggle.value) 
+    console.log('memberBtnToggle', memberBtnToggle.value)
     memberBtnToggle.value = !menu
   } else if (btn === 'cart') {
     cartBtnToggle.value = !menu
@@ -84,13 +89,24 @@ const goTo = (url) => {
       </div>
       <ul class="toolbar">
         <li class="member_bar">
-          <a @click="btnToggle('member')"><font-awesome-icon icon="user" /></a>
-          <div class="dropDown" :class="{ active: memberBtnToggle }">
-            <div class="login_info">
-              <NuxtLink @click="goTo('/login')">會員登入</NuxtLink>
-              <NuxtLink @click="goTo('/register')" href="./regist_index.html">註冊新會員</NuxtLink>
+          <template v-if="isLogin">
+            <NuxtLink :to="'/member'">
+              <font-awesome-icon icon="user" />
+            </NuxtLink>
+          </template>
+          <template v-else>
+            <a @click="btnToggle('member')"
+              ><font-awesome-icon icon="user"
+            /></a>
+            <div class="dropDown" :class="{ active: memberBtnToggle }">
+              <div class="login_info">
+                <NuxtLink @click="goTo('/login')">會員登入</NuxtLink>
+                <NuxtLink @click="goTo('/register')" href="./regist_index.html"
+                  >註冊新會員</NuxtLink
+                >
+              </div>
             </div>
-          </div>
+          </template>
         </li>
         <li class="cart_bar">
           <a @click="btnToggle('cart')"
@@ -151,7 +167,9 @@ const goTo = (url) => {
           </div>
         </li>
         <li class="search_bar">
-          <a @click="btnToggle('search')"><font-awesome-icon icon="magnifying-glass" /></a>
+          <a @click="btnToggle('search')"
+            ><font-awesome-icon icon="magnifying-glass"
+          /></a>
           <div class="dropDown" :class="{ active: searchBtnToggle }">
             <form action="">
               <input type="text" placeholder="請輸入產品名" />
@@ -164,8 +182,13 @@ const goTo = (url) => {
 
     <ul class="nav">
       <li class="sub" v-for="(item, index) in dataBase" :key="index">
-        <NuxtLink v-if="item.sub && item.sub.length>0" :to="item.sub[0].lurl" @click="menuItemToggle($event)">{{ item.lname }}</NuxtLink>
-        <ul class="sub_menu" v-if="item.sub.length>1">
+        <NuxtLink
+          v-if="item.sub && item.sub.length > 0"
+          :to="item.sub[0].lurl"
+          @click="menuItemToggle($event)"
+          >{{ item.lname }}</NuxtLink
+        >
+        <ul class="sub_menu" v-if="item.sub.length > 1">
           <li v-for="(sub, i) in item.sub" :key="i">
             <NuxtLink :to="sub.lurl">{{ sub.lname }}</NuxtLink>
           </li>

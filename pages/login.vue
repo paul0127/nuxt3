@@ -1,5 +1,4 @@
 <script setup>
-import { getLogin } from '~/api/api/login.js'
 import Title from '~/components/common/Title.vue'
 useHead({
   title: '會員登入',
@@ -11,14 +10,24 @@ const input = ref({
   password: '',
 })
 
+const store = authStore()
+const router = useRouter()
+
 const login = async () => {
-  const [result,data] = await getLogin(input.value)
+  if (!input.value.email || !input.value.password) {
+    alert('請輸入帳號和密碼')
+    return
+  }
+
+  const { email, password } = input.value
+  const result = await store.login(email, password)
   if (result) {
-    console.log('登入成功')
+    router.push('/member')
   } else {
-    console.log('登入失敗')
+    alert('登入失敗，請檢查帳號和密碼')
   }
 }
+
 </script>
 <template>
   <div>
@@ -51,20 +60,26 @@ const login = async () => {
         <div class="inputs">
           <div class="input">
             <label for="">帳號/Email</label
-            ><input type="text" v-model="input.email" placeholder="請輸入您的信箱" />
+            ><input
+              type="text"
+              v-model="input.email"
+              placeholder="請輸入您的信箱"
+            />
           </div>
           <div class="input">
             <label for="">密碼</label
-            ><input type="password" v-model="input.password" placeholder="請輸入您的密碼" />
+            ><input
+              type="password"
+              v-model="input.password"
+              placeholder="請輸入您的密碼"
+            />
           </div>
         </div>
         <ul class="login_btns">
           <li><NuxtLink to="/forget">忘記密碼?</NuxtLink></li>
           <li><NuxtLink to="/register">會員註冊</NuxtLink></li>
         </ul>
-        <button class="send" @click="login">
-          LOGIN 登入
-        </button>
+        <button class="send" @click="login">LOGIN 登入</button>
       </div>
     </div>
   </div>

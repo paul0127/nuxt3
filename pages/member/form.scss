@@ -264,10 +264,9 @@
                 border-radius: 100%;
               }
             }
-  
-            input[type='radio']:checked + label span.circle::before {
-              background-color: #333;
-            }
+          }
+          input[type='radio']:checked + label span.circle::before {
+            background-color: #333;
           }
         }
   
