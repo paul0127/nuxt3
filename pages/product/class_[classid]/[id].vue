@@ -1,12 +1,13 @@
 <script setup>
 import swiper from '~/components/kits/swiper.vue'
-import product from '@/assets/product/product.png'
 import Title from '~/components/common/Title.vue'
 
-import { getProduct, getProductItems } from '~/api/api/product.js'
+import { getProduct, toLove } from '~/api/api/product.js'
 
 const route = useRoute()
-const dataBase = ref()
+const dataBase = ref({
+  info:{}
+})
 const select_item = ref(0)
 
 const getProductApi = async () => {
@@ -45,6 +46,26 @@ const addMinusQty = (q) => {
   } else if (q === 'plus') {
     qty.value = qty.value + 1
   }
+}
+
+const toLoveApi = async () => {
+  const [result, data, info] = await toLove({ pid: dataBase.value.info.p_id })
+  if (result) {
+    alert(info)
+    await getProductApi()
+  }else{
+    alert(info)
+  }
+}
+
+const store = cartStore()
+const addCart = async () => {
+  const product = {
+    p_id: dataBase.value.info.p_id,
+    s_id: select_item.value,
+    qty: qty.value,
+  }
+  store.addToCart(product)
 }
 
 const breads = reactive([
@@ -94,7 +115,9 @@ useHead({
           </div>
 
           <div class="text">
-            <div class="name">{{ dataBase.info.p_title }}</div>
+            <div class="name" @click="getProductApi">
+              {{ dataBase.info.p_title }}
+            </div>
             <div class="feature">{{ dataBase.info.feature }}</div>
             <div class="desc">
               {{ dataBase.info.descript }}
@@ -102,9 +125,6 @@ useHead({
             <div class="price">
               <div class="discount">NT${{ selectItemPrice.selling_price }}</div>
               <div class="real">NT${{ selectItemPrice.market_price }}</div>
-            </div>
-            <div class="number">
-              <label for="">商品編號：</label>{{ dataBase.info.pccode }}
             </div>
             <div class="brand">
               <label for="">商品品牌：</label
@@ -133,19 +153,27 @@ useHead({
               </div>
             </div>
             <div class="qty">
-              <div class="minus" @click="addMinusQty('minus')"><font-awesome-icon icon="minus" /></div>
+              <div class="minus" @click="addMinusQty('minus')">
+                <font-awesome-icon icon="minus" />
+              </div>
               <input type="number" name="" id="" :value="qty" readonly />
-              <div class="plus" @click="addMinusQty('plus')"><font-awesome-icon icon="plus" /></div>
+              <div class="plus" @click="addMinusQty('plus')">
+                <font-awesome-icon icon="plus" />
+              </div>
             </div>
             <div class="btns">
-              <div class="cart_btn">
-                <i class="fas fa-shopping-cart"></i> 加入購物車
+              <div class="cart_btn" @click="addCart">
+                <font-awesome-icon icon="cart-shopping" /> 加入購物車
               </div>
-              <div class="follow_btn">
-                <i class="fas fa-heart"></i> 加入追蹤
+              <div
+                class="follow_btn"
+                :class="{ active: dataBase.info.loved }"
+                @click="toLoveApi"
+              >
+                <font-awesome-icon icon="heart" /> 加入追蹤
               </div>
               <div class="buy_btn">
-                <i class="fas fa-shopping-cart"></i> 立即購買
+                <font-awesome-icon icon="cart-shopping" /> 立即購買
               </div>
             </div>
           </div>
@@ -164,15 +192,15 @@ useHead({
                 <img :src="`${urlBase}${item.pic}`" alt="" />
               </NuxtLink>
               <div class="text">
-                <NuxtLink :to="item.url" class="name"
-                  >{{item.p_title}}</NuxtLink
-                >
+                <NuxtLink :to="item.url" class="name">{{
+                  item.p_title
+                }}</NuxtLink>
                 <div class="desc">
                   {{ item.descript }}
                 </div>
                 <div class="price">
-                  <div class="discount">NT${{item.market_price}}</div>
-                  <div class="real">NT${{item.selling_price}}</div>
+                  <div class="discount">NT${{ item.market_price }}</div>
+                  <div class="real">NT${{ item.selling_price }}</div>
                 </div>
               </div>
             </div>
@@ -377,13 +405,18 @@ useHead({
             color: #037469;
             cursor: pointer;
 
-            i {
+            svg {
               margin-right: 10px;
             }
 
             &:hover {
               background-color: #037469;
               color: #fff;
+            }
+            &.active {
+              background-color: #037469;
+              color: #fff;
+              cursor: default;
             }
           }
 

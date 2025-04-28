@@ -10,11 +10,9 @@
 
 
     const onSwiper = (swiper) => {
-    console.log(swiper);
     };
 
     const onSlideChange = () => {
-    console.log('slide change');
     };
 
     const modules = [Navigation, Pagination, Scrollbar, A11y];

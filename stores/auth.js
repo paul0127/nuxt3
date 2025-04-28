@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getLogin, reflashToken } from '~/api/api/login.js'
+import { getLogin, reflashToken, getRegister } from '~/api/api/login.js'
 
 export const authStore = defineStore('auth', {
   state: () => ({
@@ -14,6 +14,18 @@ export const authStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       const [result, data] = await getLogin({ email, password })
+      if (result) {
+        this.setLogin(data.userInfo, data.token.token, data.token.exp)
+        this.userInfo = data.userInfo
+        this.token = data.token.token
+        this.exp = data.token.exp
+        return true
+      } else {
+        return false
+      }
+    },
+    async register(obj) {
+      const [result, data] = await getRegister(obj)
       if (result) {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
         this.userInfo = data.userInfo

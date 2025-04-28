@@ -1,5 +1,35 @@
 <script setup>
 import Title from '~/components/common/Title.vue'
+
+const input = ref({
+  account: '',
+  password: '',
+  repassword:'',
+  name:''
+})
+
+const store = authStore()
+const router = useRouter()
+
+const register = async () => {
+  if (!input.value.account || !input.value.password || !input.value.name) {
+    alert('請輸入帳號和密碼和姓名')
+    return
+  }
+
+  if(input.value.password !== input.value.repassword) {
+    alert('兩次密碼輸入不相同')
+    return
+  }
+
+  const { account, password, name } = input.value
+  const result = await store.register({ account, password, name })
+  if (result) {
+    router.push('/member')
+  } else {
+    // alert('登入失敗，請檢查帳號和密碼')
+  }
+}
 </script>
 <template>
   <div class="container custom">
@@ -11,122 +41,40 @@ import Title from '~/components/common/Title.vue'
         },
       ]"
     />
-    <div class="page regist_index">
+    <div class="page regist_info">
       <div class="info">
-        <div class="item">
-          <div class="name">
-            <font-awesome-icon class="icon-left" :icon="['fab', 'pagelines']" />
-            一般會員註冊
-            <font-awesome-icon class="icon-right" :icon="['fab', 'pagelines']" />
+        <div class="info_title">
+          <font-awesome-icon class="icon-left" :icon="['fab', 'pagelines']" />
+          <div class="title_inner">
+            <div class="b_title">MEMBER</div>
+            <div class="s_title">會員註冊</div>
           </div>
-          <div class="desc">一般會員註冊</div>
-          <NuxtLink to="/register/normal">一般會員註冊</NuxtLink>
+          <font-awesome-icon class="icon-right" :icon="['fab', 'pagelines']" />
         </div>
-        <div class="item">
-          <div class="name">
-            <font-awesome-icon class="icon-left" :icon="['fab', 'pagelines']" />
-            員購、團購、美髮工具 會員註冊
-            <font-awesome-icon class="icon-right" :icon="['fab', 'pagelines']" />
+        <div class="inputs">
+          <div class="input">
+            <label for="">帳號/Email</label>
+            <input type="text" v-model="input.account" placeholder="請輸入您的信箱" />
+          </div>
+          <div class="input">
+            <label for="">姓名</label>
+            <input type="text" v-model="input.name" placeholder="請輸入您的姓名" />
+          </div>
+          <div class="input">
+            <label for="">密碼</label>
+            <input type="password" v-model="input.password" placeholder="請輸入您的密碼" />
+          </div>
+          <div class="input">
+            <label for="">再次密碼確認</label>
+            <input type="password" v-model="input.repassword" placeholder="再次輸入您的密碼" />
+          </div>
         </div>
-          <div class="desc">會員註冊</div>
-          <NuxtLink to="/register/other">會員註冊</NuxtLink>
+        <div class="btns">
+          <div class="send_btn" @click="register">送出</div>
+          <div class="clear_btn">清除</div>
         </div>
       </div>
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-/* 註冊選擇 */
-.regist_index {
-  .info {
-    margin-top: 57px;
-    display: flex;
-    justify-content: center;
-
-    .item {
-      max-width: 550px;
-      width: 100%;
-      margin-right: 8%;
-      background: #ffffff 0% 0% no-repeat padding-box;
-      box-shadow: inset 10px 50px 50px #00000033, 15px 15px 15px #00000029;
-      border-radius: 5px;
-      padding: 125px 20px 55px 20px;
-
-      &:last-child {
-        margin-right: 0;
-      }
-
-      .name {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #82cbc4;
-        margin: 0 auto;
-        margin-bottom: 30px;
-        text-align: center;
-        max-width: 460px;
-        height: 86px;
-
-        svg {
-          content: '\f18c';
-          font-family: 'Font Awesome 5 Brands';
-          font-weight: 700;
-          color: #82cbc4;
-          font-size: 1.75rem;
-        }
-
-        .icon-left {
-          margin-right: 20px;
-        }
-
-        .icon-right {
-          transform: scaleX(-1);
-          margin-left: 20px;
-        }
-      }
-
-      .desc {
-        text-align: center;
-        font-size: 1.5rem;
-        color: #82cbc4;
-        min-height: 150px;
-        margin-bottom: 12px;
-      }
-
-      a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 280px;
-        height: 54px;
-        margin: 0 auto;
-        background-color: #82cbc4;
-        color: #fff;
-        border-radius: 20px;
-        font-size: 1.65rem;
-        text-decoration: none;
-        cursor: pointer;
-
-        &:hover {
-          opacity: 0.8;
-        }
-      }
-    }
-  }
-
-  @media (max-width: 1200px) {
-    .info {
-      margin-top: 0;
-      flex-wrap: wrap;
-
-      .item {
-        flex: 0 0 100%;
-        margin-right: 0;
-        margin-bottom: 30px;
-      }
-    }
-  }
-}
-</style>
+<style lang="scss" scoped src="./register.scss" />

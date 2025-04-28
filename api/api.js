@@ -3,13 +3,13 @@ export async function get(url, params = {}) {
     method: 'GET',
     baseURL: `${urlBase}`,
     params: params,
-    headers:{
-        Authorization: useCookie('token').value,
-    }
+    headers: {
+      Authorization: useCookie('token').value,
+    },
   })
 
   if (status.value === 'success') {
-    return [!data.value.status, data.value.data]
+    return [!data.value.status, data.value.data, data.value.info]
   } else {
     return [false, null]
   }
@@ -20,13 +20,13 @@ export async function post(url, params = {}) {
     method: 'POST',
     baseURL: `${urlBase}`,
     body: params,
-    headers:{
-        Authorization: useCookie('token').value,
-    }
+    headers: {
+      Authorization: useCookie('token').value,
+    },
   })
 
   if (status.value === 'success') {
-    return [!data.value.status, data.value.data]
+    return [!data.value.status, data.value.data, data.value.info]
   } else {
     return [false, null]
   }

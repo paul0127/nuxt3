@@ -10,11 +10,15 @@ const isLogin = computed(() => {
   return store.isLoggedIn
 })
 
+const cart = cartStore()
+const cartList = computed(() => {
+  return cart.getCartDetail
+})
+
 const menuToggle = () => {
   // const menu = document.querySelector('header ul.nav')
   // const menuBtn = document.querySelector('.menu_btn')
   // const activeClass = 'active'
-
   // if (menu.classList.contains(activeClass)) {
   //   menu.classList.remove(activeClass)
   //   menuBtn.classList.remove(activeClass)
@@ -25,18 +29,17 @@ const menuToggle = () => {
 }
 
 const menuItemToggle = (event) => {
-//   const menu = event.currentTarget.nextElementSibling;
-//   const activeClass = 'active';
-
-//   if (menu.classList.contains(activeClass)) {
-//     menu.classList.remove(activeClass);
-//   } else {
-//     const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu');
-//     allMenus.forEach((item) => {
-//       item.classList.remove(activeClass);
-//     });
-//     menu.classList.add(activeClass);
-//   }
+  //   const menu = event.currentTarget.nextElementSibling;
+  //   const activeClass = 'active';
+  //   if (menu.classList.contains(activeClass)) {
+  //     menu.classList.remove(activeClass);
+  //   } else {
+  //     const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu');
+  //     allMenus.forEach((item) => {
+  //       item.classList.remove(activeClass);
+  //     });
+  //     menu.classList.add(activeClass);
+  //   }
 }
 
 const router = useRouter()
@@ -63,7 +66,6 @@ const btnToggle = (btn) => {
   allClose()
 
   if (btn === 'member') {
-    console.log('memberBtnToggle', memberBtnToggle.value)
     memberBtnToggle.value = !menu
   } else if (btn === 'cart') {
     cartBtnToggle.value = !menu
@@ -118,52 +120,19 @@ const goTo = (url) => {
           <div class="dropDown" :class="{ active: cartBtnToggle }">
             <div class="cart_info">
               <div class="list">
-                <div class="item">
+                <div class="item" v-for="(item,index) in cartList" :key="index">
                   <div class="image">
-                    <img src="@/assets/index/product.png" alt="" />
+                    <img :src="`${urlBase}${item.pic}`" alt="" />
                   </div>
                   <div class="text">
                     <div class="name">
-                      本期07月每刊好物(2107 -02)美髮轉燈水槍
+                      {{item.p_title}}{{ item.specification ? `-${item.specification}` : null }}
                     </div>
-                    <div class="qty"><label for="">數量:</label>1</div>
-                  </div>
-                </div>
-                <div class="item">
-                  <div class="image">
-                    <img src="@/assets/index/product.png" alt="" />
-                  </div>
-                  <div class="text">
-                    <div class="name">
-                      本期07月每刊好物(2107 -02)美髮轉燈水槍
-                    </div>
-                    <div class="qty"><label for="">數量:</label>1</div>
-                  </div>
-                </div>
-                <div class="item">
-                  <div class="image">
-                    <img src="@/assets/index/product.png" alt="" />
-                  </div>
-                  <div class="text">
-                    <div class="name">
-                      本期07月每刊好物(2107 -02)美髮轉燈水槍
-                    </div>
-                    <div class="qty"><label for="">數量:</label>1</div>
-                  </div>
-                </div>
-                <div class="item">
-                  <div class="image">
-                    <img src="@/assets/index/product.png" alt="" />
-                  </div>
-                  <div class="text">
-                    <div class="name">
-                      本期07月每刊好物(2107 -02)美髮轉燈水槍
-                    </div>
-                    <div class="qty"><label for="">數量:</label>1</div>
+                    <div class="qty"><label for="">數量:</label>{{ item.qty }}</div>
                   </div>
                 </div>
               </div>
-              <a @click="goTo('/cart')" class="to_cart">立即結帳</a>
+              <NuxtLink to="/cart" class="to_cart">立即結帳</NuxtLink>
             </div>
           </div>
         </li>

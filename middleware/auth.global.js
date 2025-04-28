@@ -10,7 +10,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return navigateTo('/login')
   }
   if (to.name === 'login' && isLoggedIn) {
-    console.log(to, 'back')
     return navigateTo('/')
   }
 })
