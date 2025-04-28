@@ -26,7 +26,7 @@ const pageCount = computed(() => {
   return Math.ceil(props.total / props.limit)
 })
 
-const pageChange = async (p) =>{
+const pageChange = async (p) => {
   await router.push({ query: { ...route.query, page: p }, force: true })
   emit('pageChange')
 }
@@ -49,22 +49,28 @@ const goToPage = async (p) => {
 }
 </script>
 <template>
-  <ul class="pager">
-    <li class="pre" :class="{ unable: nowPage <= 1 }" @click="prePage">
-      <font-awesome-icon icon="angles-left" />
-    </li>
-    <li
-      v-for="(item, index) in pageCount"
-      :key="index"
-      :class="{ active: index + 1 == props.page }"
-      @click="goToPage(index + 1)"
-    >
-      {{ index + 1 }}
-    </li>
-    <li class="next" :class="{ unable: nowPage >= pageCount }" @click="nextPage">
-      <font-awesome-icon icon="angles-right" />
-    </li>
-  </ul>
+  <div>
+    <ul class="pager" v-if="pageCount > 0">
+      <li class="pre" :class="{ unable: nowPage <= 1 }" @click="prePage">
+        <font-awesome-icon icon="angles-left" />
+      </li>
+      <li
+        v-for="(item, index) in pageCount"
+        :key="index"
+        :class="{ active: index + 1 == props.page }"
+        @click="goToPage(index + 1)"
+      >
+        {{ index + 1 }}
+      </li>
+      <li
+        class="next"
+        :class="{ unable: nowPage >= pageCount }"
+        @click="nextPage"
+      >
+        <font-awesome-icon icon="angles-right" />
+      </li>
+    </ul>
+  </div>
 </template>
 <style lang="scss" scoped>
 ul.pager {

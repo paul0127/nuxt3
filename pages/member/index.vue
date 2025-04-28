@@ -11,7 +11,6 @@ const dataBase = ref({
 const getMemberInfoApi = async () => {
   const [result, data] = await getMemberInfo()
   dataBase.value = data
-  console.log(dataBase.value)
 }
 await getMemberInfoApi()
 
@@ -30,7 +29,7 @@ definePageMeta({
 </script>
 <template>
   <div>
-    <div class="m_title">個人資訊</div>
+    <div class="m_title" @click="getMemberInfoApi">個人資訊</div>
     <div class="form">
       <div class="list">
         <div class="item">

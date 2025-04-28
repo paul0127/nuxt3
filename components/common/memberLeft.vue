@@ -1,3 +1,12 @@
+<script setup>
+const store = authStore()
+const router = useRouter()
+
+const logout = async () => {
+  await store.logout()
+  await router.push('/')
+}
+</script>
 <template>
     <div class="left_menu">
         <div class="level">VIP會員</div>
@@ -8,7 +17,7 @@
             <li><NuxtLink to="/member/address">收件地址管理 <font-awesome-icon :icon="['fas', 'angle-right']" /></NuxtLink></li>
             <li><NuxtLink to="/member/love">收藏清單</NuxtLink></li>
         </ul>
-        <button>登出</button>
+        <button @click="logout">登出</button>
     </div>
 </template>
 <style scoped lang="scss">
@@ -59,6 +68,7 @@
       }
 
       button {
+        cursor: pointer;
         width: 100%;
         background-color: #82cbc4;
         border: none;

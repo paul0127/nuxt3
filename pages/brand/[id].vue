@@ -21,7 +21,6 @@ const getBrandProductListApi = async () => {
     fliter: route.query.fliter || null,
   })
   dataBase.value = data
-  console.log(dataBase.value.info.name)
 }
 await getBrandProductListApi()
 

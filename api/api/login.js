@@ -6,6 +6,13 @@ const getLogin = async (req, res) => {
     return [result, data];
 }
 
+const reflashToken = async (req, res) => {
+    const [result, data] = await apiService.post('index.php?g=Api&m=Login&a=checkTokenExpired', req);
+
+    return [result, data];
+}
+
 export {
     getLogin,
+    reflashToken
 }

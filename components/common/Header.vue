@@ -11,20 +11,20 @@ const isLogin = computed(() => {
 })
 
 const menuToggle = () => {
-  const menu = document.querySelector('header ul.nav')
-  const menuBtn = document.querySelector('.menu_btn')
-  const activeClass = 'active'
+  // const menu = document.querySelector('header ul.nav')
+  // const menuBtn = document.querySelector('.menu_btn')
+  // const activeClass = 'active'
 
-  if (menu.classList.contains(activeClass)) {
-    menu.classList.remove(activeClass)
-    menuBtn.classList.remove(activeClass)
-  } else {
-    menu.classList.add(activeClass)
-    menuBtn.classList.add(activeClass)
-  }
+  // if (menu.classList.contains(activeClass)) {
+  //   menu.classList.remove(activeClass)
+  //   menuBtn.classList.remove(activeClass)
+  // } else {
+  //   menu.classList.add(activeClass)
+  //   menuBtn.classList.add(activeClass)
+  // }
 }
 
-// const menuItemToggle = (event) => {
+const menuItemToggle = (event) => {
 //   const menu = event.currentTarget.nextElementSibling;
 //   const activeClass = 'active';
 
@@ -37,7 +37,8 @@ const menuToggle = () => {
 //     });
 //     menu.classList.add(activeClass);
 //   }
-// }
+}
+
 const router = useRouter()
 const memberBtnToggle = ref(false)
 const cartBtnToggle = ref(false)
@@ -505,7 +506,7 @@ header {
       }
 
       ul.toolbar {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
 
         li {
           margin-right: 15px;
@@ -522,7 +523,7 @@ header {
     }
 
     ul.nav {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
 
       > li {
         margin-right: 20px;

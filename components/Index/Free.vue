@@ -6,9 +6,9 @@ const props = defineProps({
   },
 })
 const content = ref()
-content.value= props.layoutData.qt.replace(
-  '/ckfinder/',
-  `${urlBase}/ckfinder/`
+content.value= props.layoutData.qt.replaceAll(
+  'ckfinder/',
+  `${urlBase}ckfinder/`
 )
 </script>
 <template>

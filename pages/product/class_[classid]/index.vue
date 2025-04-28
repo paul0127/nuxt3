@@ -7,7 +7,9 @@ import { getProductList } from '~/api/api/product.js'
 
 const route = useRoute()
 
-const dataBase = ref()
+const dataBase = ref({
+  list:[]
+})
 const orderType = ref(null)
 
 const getProductListApi = async () => {
@@ -16,7 +18,7 @@ const getProductListApi = async () => {
   } else {
     orderType.value = null
   }
-  
+
   const [result, data] = await getProductList({
     class: route.params.classid,
     p: route.query.page || 1,
@@ -76,13 +78,24 @@ useHead({
       @orderTypeChange="getProductListApi"
     />
     <div class="page product">
-      <CommonProductRight :productList="dataBase.list" :tabType="tabType" :classId="classId" />
-      <pager
-        :total="dataBase.total"
-        :page="dataBase.page"
-        :limit="dataBase.limit"
-        @pageChange="getProductListApi"
-      />
+      <template v-if="dataBase.list && dataBase.list.length > 0">
+        <CommonProductRight
+          :productList="dataBase.list"
+          :tabType="tabType"
+          :classId="classId"
+        />
+        <pager
+          :total="dataBase.total"
+          :page="dataBase.page"
+          :limit="dataBase.limit"
+          @pageChange="getProductListApi"
+        />
+      </template>
+      <template v-else>
+        <div class="no_product">
+          <p>目前沒有商品</p>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -99,6 +112,5 @@ useHead({
   .product_frame {
     display: flex;
   }
-
 }
 </style>

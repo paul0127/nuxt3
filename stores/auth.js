@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
-import { getLogin } from '~/api/api/login.js'
+import { getLogin, reflashToken } from '~/api/api/login.js'
 
 export const authStore = defineStore('auth', {
   state: () => ({
     userInfo: null,
     token: null,
+    exp: null,
   }),
   getters: {
     isLoggedIn: (state) => !!state.token,
@@ -14,23 +15,28 @@ export const authStore = defineStore('auth', {
     async login(email, password) {
       const [result, data] = await getLogin({ email, password })
       if (result) {
-        this.setLogin(data.userInfo, data.token)
+        this.setLogin(data.userInfo, data.token.token, data.token.exp)
         this.userInfo = data.userInfo
-        this.token = data.token
+        this.token = data.token.token
+        this.exp = data.token.exp
         return true
       } else {
         return false
       }
     },
     logout() {
-      localStorage.removeItem('userInfo')
-      localStorage.removeItem('token')
+      useCookie('userInfo').value = null
+      useCookie('token').value = null
+      useCookie('exp').value = null
       this.userInfo = null
       this.token = null
+      this.exp = null
     },
     getLogin() {
       const userInfo = useCookie('userInfo').value
       const token = useCookie('token').value
+      const exp = useCookie('exp').value
+
       if (userInfo) {
         this.userInfo = userInfo
       } else {
@@ -42,13 +48,35 @@ export const authStore = defineStore('auth', {
       } else {
         this.token = null
       }
-    },
-    setLogin(userInfo, token) {
-      const userInfoData = useCookie('userInfo')
-      userInfoData.value = JSON.stringify(userInfo)
 
-      const tokenData = useCookie('token')
-      tokenData.value = token
+      if (exp) {
+        this.exp = exp
+      }
     },
+    setLogin(userInfo, token, exp) {
+      if (userInfo) {
+        const userInfoData = useCookie('userInfo')
+        userInfoData.value = JSON.stringify(userInfo)
+        this.userInfo = userInfo
+      }
+
+      if (token) {
+        const tokenData = useCookie('token', { maxAge: 3600 * 3 })
+        tokenData.value = token
+        this.token = token
+      }
+
+      if (exp) {
+        const expData = useCookie('exp', { maxAge: 3600 * 3 })
+        expData.value = exp
+        this.exp = exp
+      }
+    },
+    async reflashToken(){
+      const [result,data] = await reflashToken()
+      if(result){
+        this.setLogin(null,data.token,data.exp)
+      }
+    }
   },
 })
