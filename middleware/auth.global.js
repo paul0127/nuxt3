@@ -1,8 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const store = authStore()
-  store.getLogin()
-
-  await checkReflashToken()
+  await store.getLogin()
 
   const isLoggedIn = store.isLoggedIn
 

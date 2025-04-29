@@ -1,7 +1,7 @@
 import * as apiService from '../api.js';
 
 const getMemberInfo = async (req, res) => {
-    const [result, data] = await apiService.get('index.php?g=Api&m=Member&a=mem_data', req);
+    const [result, data] = await apiService.post('index.php?g=Api&m=Member&a=mem_data', req);
 
     return [result, data];
 }

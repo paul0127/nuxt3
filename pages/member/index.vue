@@ -10,7 +10,9 @@ const dataBase = ref({
 })
 const getMemberInfoApi = async () => {
   const [result, data] = await getMemberInfo()
-  dataBase.value = data
+  if(result){
+    dataBase.value = data
+  }
 }
 await getMemberInfoApi()
 

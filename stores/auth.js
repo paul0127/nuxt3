@@ -5,7 +5,6 @@ export const authStore = defineStore('auth', {
   state: () => ({
     userInfo: null,
     token: null,
-    exp: null,
   }),
   getters: {
     isLoggedIn: (state) => !!state.token,
@@ -18,7 +17,7 @@ export const authStore = defineStore('auth', {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
         this.userInfo = data.userInfo
         this.token = data.token.token
-        this.exp = data.token.exp
+
         return true
       } else {
         return false
@@ -30,7 +29,7 @@ export const authStore = defineStore('auth', {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
         this.userInfo = data.userInfo
         this.token = data.token.token
-        this.exp = data.token.exp
+        
         return true
       } else {
         return false
@@ -39,15 +38,11 @@ export const authStore = defineStore('auth', {
     logout() {
       useCookie('userInfo').value = null
       useCookie('token').value = null
-      useCookie('exp').value = null
       this.userInfo = null
-      this.token = null
-      this.exp = null
     },
     getLogin() {
       const userInfo = useCookie('userInfo').value
       const token = useCookie('token').value
-      const exp = useCookie('exp').value
 
       if (userInfo) {
         this.userInfo = userInfo
@@ -60,28 +55,18 @@ export const authStore = defineStore('auth', {
       } else {
         this.token = null
       }
-
-      if (exp) {
-        this.exp = exp
-      }
     },
-    setLogin(userInfo, token, exp) {
+    async setLogin(userInfo, token) {
       if (userInfo) {
-        const userInfoData = useCookie('userInfo')
+        const userInfoData = await useCookie('userInfo')
         userInfoData.value = JSON.stringify(userInfo)
         this.userInfo = userInfo
       }
 
       if (token) {
-        const tokenData = useCookie('token', { maxAge: 3600 * 3 })
+        const tokenData = await useCookie('token', { maxAge: 3600 * 3 })
         tokenData.value = token
         this.token = token
-      }
-
-      if (exp) {
-        const expData = useCookie('exp', { maxAge: 3600 * 3 })
-        expData.value = exp
-        this.exp = exp
       }
     },
     async reflashToken(){

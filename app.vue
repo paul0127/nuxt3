@@ -2,7 +2,7 @@
 onMounted(async ()=>{
   const store = cartStore()
   await store.getCart()
-  await store.getToCartDetail()
+  await store.getToCartDetail()  
 })
 
 useHead({

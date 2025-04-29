@@ -1,3 +1,4 @@
+
 export async function get(url, params = {}) {
   const { data, status, error, refresh } = await useFetch(url, {
     method: 'GET',
@@ -20,8 +21,28 @@ export async function post(url, params = {}) {
     method: 'POST',
     baseURL: `${urlBase}`,
     body: params,
-    headers: {
-      Authorization: useCookie('token').value,
+
+    onRequest({ request, options }) {
+      const token = useCookie('token').value
+      options.headers.set('Authorization', token)
+    },
+
+    async onResponse({ request, response, options }) {
+
+      if(response._data.data.code == 401){
+        const store = authStore()
+        const { data, status } = await useFetch('index.php?g=Api&m=Login&a=checkTokenExpired', {
+          method: 'POST',
+          baseURL: `${urlBase}`,
+          headers: {
+            Authorization: useCookie('token').value,
+          },
+        }) 
+
+        await store.setLogin(null,data.value.data.token)
+
+        return refresh()
+      }
     },
   })
 
