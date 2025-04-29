@@ -1,6 +1,6 @@
 <script setup>
 import Title from '~/components/common/Title.vue'
-import { toLove } from '~/api/api/product.js'
+const { toLove } = useApiClient()
 
 const cart = cartStore()
 const cartList = computed(() => {

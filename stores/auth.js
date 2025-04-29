@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getLogin, reflashToken, getRegister } from '~/api/api/login.js'
+import { useApiClient } from '@/composables/useApiClient'
 
 export const authStore = defineStore('auth', {
   state: () => ({
@@ -12,6 +12,7 @@ export const authStore = defineStore('auth', {
   },
   actions: {
     async login(email, password) {
+      const { getLogin } = useApiClient()
       const [result, data] = await getLogin({ email, password })
       if (result) {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
@@ -24,12 +25,13 @@ export const authStore = defineStore('auth', {
       }
     },
     async register(obj) {
+      const { getRegister } = useApiClient()
       const [result, data] = await getRegister(obj)
       if (result) {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
         this.userInfo = data.userInfo
         this.token = data.token.token
-        
+
         return true
       } else {
         return false
@@ -64,16 +66,21 @@ export const authStore = defineStore('auth', {
       }
 
       if (token) {
-        const tokenData = await useCookie('token', { maxAge: 3600 * 3 })
+        const tokenData = await useCookie('token', {
+          maxAge: 60 * 60 * 24 * 7, // 7 天
+          path: '/',
+          sameSite: 'lax',
+        })
         tokenData.value = token
         this.token = token
       }
     },
-    async reflashToken(){
-      const [result,data] = await reflashToken()
-      if(result){
-        this.setLogin(null,data.token,data.exp)
+    async reflashToken() {
+      const { reflashToken } = useApiClient()
+      const [result, data] = await reflashToken()
+      if (result) {
+        this.setLogin(null, data.token, data.exp)
       }
-    }
+    },
   },
 })

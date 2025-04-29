@@ -1,6 +1,6 @@
 <script setup>
 import Title from '~/components/common/Title.vue'
-import { pageData } from '~/api/api/page.js'
+const { pageData } = useApiClient()
 
 const route = useRoute()
 

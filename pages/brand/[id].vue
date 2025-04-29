@@ -2,7 +2,7 @@
 import pager from '~/components/common/pager.vue'
 import Title from '~/components/common/Title.vue'
 
-import { getBrandProductList } from '~/api/api/brand.js'
+const { getBrandProductList } = useApiClient()
 
 const route = useRoute()
 

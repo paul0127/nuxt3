@@ -1,5 +1,5 @@
 <script setup>
-import { getFooterData } from '~/api/api/base.js'
+const { getFooterData } = useApiClient()
 
 const dataBase = ref()
 const [result, data] = await getFooterData()

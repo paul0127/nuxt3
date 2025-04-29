@@ -1,5 +1,5 @@
 <script setup>
-import { getMemberInfo, saveMemberInfo } from '~/api/api/member'
+const { getMemberInfo, saveMemberInfo } = useApiClient()
 
 const dataBase = ref({
   account: '',

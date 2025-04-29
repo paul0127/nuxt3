@@ -3,7 +3,7 @@ import pager from '~/components/common/pager.vue'
 import Title from '~/components/common/Title.vue'
 import { currency } from '~/utils/filter.js'
 
-import { getProductList } from '~/api/api/product.js'
+const { getProductList } = useApiClient()
 
 const route = useRoute()
 

@@ -2,7 +2,7 @@
 import pager from '~/components/common/pager.vue'
 import Title from '~/components/common/Title.vue'
 
-import { getNewsList } from '~/api/api/news.js'
+const { getNewsList } = useApiClient()
 
 const route = useRoute()
 

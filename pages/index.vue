@@ -1,5 +1,5 @@
 <script setup>
-import { indexLayout } from '~/api/api/index.js'
+const { indexLayout } = useApiClient()
 
 const dataBase = ref()
 

@@ -1,5 +1,5 @@
 <script setup>
-import { getHeaderData } from '~/api/api/base.js'
+const { getHeaderData } = useApiClient()
 
 const dataBase = ref()
 const [result, data] = await getHeaderData()

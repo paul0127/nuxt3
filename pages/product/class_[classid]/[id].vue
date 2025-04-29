@@ -2,7 +2,7 @@
 import swiper from '~/components/kits/swiper.vue'
 import Title from '~/components/common/Title.vue'
 
-import { getProduct, toLove } from '~/api/api/product.js'
+const { getProduct, toLove } = useApiClient()
 
 const route = useRoute()
 const dataBase = ref({
