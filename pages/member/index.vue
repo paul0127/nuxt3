@@ -10,7 +10,7 @@ const dataBase = ref({
 })
 const getMemberInfoApi = async () => {
   const [result, data] = await getMemberInfo()
-  if(result){
+  if (result) {
     dataBase.value = data
   }
 }
@@ -35,62 +35,42 @@ definePageMeta({
     <div class="form">
       <div class="list">
         <div class="item">
-          <label for="">姓名</label>
-          <input
-            type="text"
-            v-model="dataBase.name"
+          <label for="">帳號/Email</label>
+          <el-input
+            v-model="dataBase.account"
+            disabled
             placeholder="請輸入您的姓名"
           />
         </div>
         <div class="item">
-          <label for="">帳號/Email</label>
-          <input
-            type="text"
-            v-model="dataBase.account"
-            placeholder="請輸入您的信箱"
-          />
+          <label for="">姓名</label>
+          <el-input v-model="dataBase.name" placeholder="請輸入您的姓名" />
         </div>
         <div class="item">
           <label for="">出生日期</label>
           <div class="birth_type">
-            <input type="text" placeholder="西元" /><span>年</span>
-            <select name="" id="">
-              <option value="">1</option>
-              <option value="">12</option></select
-            ><span>月</span>
-            <select name="" id="">
-              <option value="">1</option></select
-            ><span>日</span>
+            <el-date-picker
+              v-model="dataBase.birthday"
+              type="date"
+              placeholder="Pick a day"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+            />
           </div>
         </div>
         <div class="item">
           <label for="">手機</label>
-          <input
-            type="text"
+          <el-input
             v-model="dataBase.phone"
             placeholder="請輸入您的手機"
           />
         </div>
         <div class="item inline">
           <label for="">性別</label>
-          <div class="radio_type">
-            <input
-              type="radio"
-              v-model="dataBase.sex"
-              :value="1"
-              name="type"
-              id="type_0"
-            />
-            <label for="type_0"><span class="circle"></span>男</label>
-            <input
-              type="radio"
-              v-model="dataBase.sex"
-              :value="0"
-              name="type"
-              id="type_1"
-            />
-            <label for="type_1"><span class="circle"></span>女</label>
-          </div>
+          <el-radio-group v-model="dataBase.sex">
+            <el-radio :value="1" size="large">男</el-radio>
+            <el-radio :value="0" size="large">女</el-radio>
+          </el-radio-group>
         </div>
       </div>
       <div class="send"><a @click="saveMemberInfoApi">確定修改</a></div>

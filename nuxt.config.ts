@@ -2,6 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://php.e-office.tw/', 
+    },
+  },
   app: {
     head: {
       link: [
@@ -13,8 +18,6 @@ export default defineNuxtConfig({
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  plugins: [
-  ],
   modules: [
     '@nuxt/content',
     '@nuxt/fonts',
@@ -23,6 +26,7 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/ui',
     '@nuxt/test-utils',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@element-plus/nuxt'
   ]
 })

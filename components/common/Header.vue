@@ -16,30 +16,30 @@ const cartList = computed(() => {
 })
 
 const menuToggle = () => {
-  // const menu = document.querySelector('header ul.nav')
-  // const menuBtn = document.querySelector('.menu_btn')
-  // const activeClass = 'active'
-  // if (menu.classList.contains(activeClass)) {
-  //   menu.classList.remove(activeClass)
-  //   menuBtn.classList.remove(activeClass)
-  // } else {
-  //   menu.classList.add(activeClass)
-  //   menuBtn.classList.add(activeClass)
-  // }
+  const menu = document.querySelector('header ul.nav')
+  const menuBtn = document.querySelector('.menu_btn')
+  const activeClass = 'active'
+  if (menu.classList.contains(activeClass)) {
+    menu.classList.remove(activeClass)
+    menuBtn.classList.remove(activeClass)
+  } else {
+    menu.classList.add(activeClass)
+    menuBtn.classList.add(activeClass)
+  }
 }
 
 const menuItemToggle = (event) => {
-  //   const menu = event.currentTarget.nextElementSibling;
-  //   const activeClass = 'active';
-  //   if (menu.classList.contains(activeClass)) {
-  //     menu.classList.remove(activeClass);
-  //   } else {
-  //     const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu');
-  //     allMenus.forEach((item) => {
-  //       item.classList.remove(activeClass);
-  //     });
-  //     menu.classList.add(activeClass);
-  //   }
+    const menu = event.currentTarget.nextElementSibling;
+    const activeClass = 'active';
+    if (menu.classList.contains(activeClass)) {
+      menu.classList.remove(activeClass);
+    } else {
+      const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu');
+      allMenus.forEach((item) => {
+        item.classList.remove(activeClass);
+      });
+      menu.classList.add(activeClass);
+    }
 }
 
 const router = useRouter()
@@ -113,26 +113,35 @@ const goTo = (url) => {
         </li>
         <li class="cart_bar">
           <a @click="btnToggle('cart')"
-            ><font-awesome-icon icon="cart-shopping" /><span class="num"
-              >0</span
-            ></a
+            ><font-awesome-icon icon="cart-shopping" /><span class="num">{{
+              cartList.length
+            }}</span></a
           >
           <div class="dropDown" :class="{ active: cartBtnToggle }">
             <div class="cart_info">
               <div class="list">
-                <div class="item" v-for="(item,index) in cartList" :key="index">
+                <div
+                  class="item"
+                  v-for="(item, index) in cartList"
+                  :key="index"
+                >
                   <div class="image">
                     <img :src="`${urlBase}${item.pic}`" alt="" />
                   </div>
                   <div class="text">
                     <div class="name">
-                      {{item.p_title}}{{ item.specification ? `-${item.specification}` : null }}
+                      {{ item.p_title
+                      }}{{
+                        item.specification ? `-${item.specification}` : null
+                      }}
                     </div>
-                    <div class="qty"><label for="">數量:</label>{{ item.qty }}</div>
+                    <div class="qty">
+                      <label for="">數量:</label>{{ item.qty }}
+                    </div>
                   </div>
                 </div>
               </div>
-              <NuxtLink to="/cart" class="to_cart">立即結帳</NuxtLink>
+              <NuxtLink @click="goTo('/cart')" class="to_cart">立即結帳</NuxtLink>
             </div>
           </div>
         </li>
