@@ -1,5 +1,7 @@
 <script setup>
-const { indexLayout } = useApiClient()
+import { useBaseApi } from '~/composables/api'
+
+const { indexLayout } = useBaseApi()
 
 const dataBase = ref()
 

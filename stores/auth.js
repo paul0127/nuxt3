@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { useApiClient } from '@/composables/useApiClient'
+import { useLoginApi } from '~/composables/api'
+
 
 export const authStore = defineStore('auth', {
   state: () => ({
@@ -12,7 +13,7 @@ export const authStore = defineStore('auth', {
   },
   actions: {
     async login(email, password) {
-      const { getLogin } = useApiClient()
+      const { getLogin } = useLoginApi()
       const [result, data] = await getLogin({ email, password })
       if (result) {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
@@ -25,7 +26,7 @@ export const authStore = defineStore('auth', {
       }
     },
     async register(obj) {
-      const { getRegister } = useApiClient()
+      const { getRegister } = useLoginApi()
       const [result, data] = await getRegister(obj)
       if (result) {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
@@ -76,7 +77,7 @@ export const authStore = defineStore('auth', {
       }
     },
     async reflashToken() {
-      const { reflashToken } = useApiClient()
+      const { reflashToken } = useLoginApi()
       const [result, data] = await reflashToken()
       if (result) {
         this.setLogin(null, data.token, data.exp)

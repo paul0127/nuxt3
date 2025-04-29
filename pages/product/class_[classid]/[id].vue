@@ -1,8 +1,9 @@
 <script setup>
 import swiper from '~/components/kits/swiper.vue'
 import Title from '~/components/common/Title.vue'
+import { useProductApi } from '~/composables/api'
 
-const { getProduct, toLove } = useApiClient()
+const { getProduct, toLove } = useProductApi()
 
 const route = useRoute()
 const dataBase = ref({

@@ -1,5 +1,7 @@
 <script setup>
-const { getHeaderData } = useApiClient()
+import { useBaseApi } from '~/composables/api'
+
+const { getHeaderData } = useBaseApi()
 
 const dataBase = ref()
 const [result, data] = await getHeaderData()

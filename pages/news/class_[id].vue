@@ -1,8 +1,10 @@
 <script setup>
 import pager from '~/components/common/pager.vue'
 import Title from '~/components/common/Title.vue'
+import { useNewsApi } from '~/composables/api'
 
-const { getNewsList } = useApiClient()
+
+const { getNewsList } = useNewsApi()
 
 const route = useRoute()
 

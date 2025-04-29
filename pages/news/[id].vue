@@ -1,6 +1,8 @@
 <script setup>
 import Title from '~/components/common/Title.vue'
-const { getNews } = useApiClient()
+import { useNewsApi } from '~/composables/api'
+
+const { getNews } = useNewsApi()
 
 const route = useRoute()
 const dataBase = ref()

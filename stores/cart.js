@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useApiClient } from '@/composables/useApiClient'
+import { useCartApi } from '~/composables/api'
 
 export const cartStore = defineStore('cart', {
   state: () => ({
@@ -38,7 +38,7 @@ export const cartStore = defineStore('cart', {
       }
     },
     async getToCartDetail(){
-      const { getCartDetail } = useApiClient()
+      const { getCartDetail } = useCartApi()
 
       const [result,data, info] = await getCartDetail(this.cart)
       if(result){

@@ -1,5 +1,7 @@
 <script setup>
-const { getFooterData } = useApiClient()
+import { useBaseApi } from '~/composables/api'
+
+const { getFooterData } = useBaseApi()
 
 const dataBase = ref()
 const [result, data] = await getFooterData()

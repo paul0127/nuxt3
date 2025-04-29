@@ -1,5 +1,7 @@
 <script setup>
-const { getMemberInfo, saveMemberInfo } = useApiClient()
+import { useMemberApi } from '~/composables/api'
+
+const { getMemberInfo, saveMemberInfo } = useMemberApi()
 
 const dataBase = ref({
   account: '',

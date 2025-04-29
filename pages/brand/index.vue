@@ -1,7 +1,9 @@
 <script setup>
 import Title from '~/components/common/Title.vue'
+import { useBrandApi } from '~/composables/api'
 
-const { getBrandList } = useApiClient()
+
+const { getBrandList } = useBrandApi()
 
 const dataBase = ref()
 const getBrandListApi = async () => {
