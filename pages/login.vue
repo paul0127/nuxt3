@@ -32,7 +32,7 @@ const login = async () => {
 </script>
 <template>
   <div>
-    <Title
+    <commonTitle
       :breads="[
         {
           name: '會員專區',

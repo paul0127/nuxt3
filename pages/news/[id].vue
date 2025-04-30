@@ -1,5 +1,4 @@
 <script setup>
-import Title from '~/components/common/Title.vue'
 import { useNewsApi } from '~/composables/api'
 
 const { getNews } = useNewsApi()
@@ -24,7 +23,7 @@ const breads = reactive([
 </script>
 <template>
   <div>
-    <Title :breads="breads" />
+    <commonTitle :breads="breads" />
 
     <div class="page news">
       <div class="info">

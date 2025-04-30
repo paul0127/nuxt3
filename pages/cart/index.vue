@@ -1,5 +1,4 @@
 <script setup>
-import Title from '~/components/common/Title.vue'
 import { useProductApi } from '~/composables/api'
 
 const { toLove } = useProductApi()
@@ -30,7 +29,7 @@ const router = useRouter()
 </script>
 <template>
   <div class="container custom">
-    <Title
+    <commonTitle
       :breads="[
         {
           name: '會員專區',

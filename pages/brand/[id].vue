@@ -1,7 +1,4 @@
 <script setup>
-import pager from '~/components/common/pager.vue'
-import Title from '~/components/common/Title.vue'
-
 import { useBrandApi } from '~/composables/api'
 
 
@@ -50,7 +47,7 @@ useHead({
 </script>
 <template>
   <div>
-    <Title :breads="breads" />
+    <CommonTitle :breads="breads" />
     <div class="page product">
       <div class="top">
         <img :src="`${urlBase}${dataBase.info.pic}`" alt="" />
@@ -67,7 +64,7 @@ useHead({
         />
       </div>
 
-      <pager
+      <CommonPager
         :total="dataBase.total"
         :page="dataBase.page"
         :limit="dataBase.limit"

@@ -4,8 +4,12 @@ import { useBaseApi } from '~/composables/api'
 const { getHeaderData } = useBaseApi()
 
 const dataBase = ref()
-const [result, data] = await getHeaderData()
-dataBase.value = data
+try {
+  const [result, data] = await getHeaderData()
+  dataBase.value = data
+} catch (error) {
+  dataBase.value = []
+}
 
 const store = authStore()
 const isLogin = computed(() => {
@@ -20,6 +24,7 @@ const cartList = computed(() => {
 const menuToggle = () => {
   const menu = document.querySelector('header ul.nav')
   const menuBtn = document.querySelector('.menu_btn')
+  if (!menu || !menuBtn) return
   const activeClass = 'active'
   if (menu.classList.contains(activeClass)) {
     menu.classList.remove(activeClass)
@@ -31,17 +36,14 @@ const menuToggle = () => {
 }
 
 const menuItemToggle = (event) => {
-    const menu = event.currentTarget.nextElementSibling;
-    const activeClass = 'active';
-    if (menu.classList.contains(activeClass)) {
-      menu.classList.remove(activeClass);
-    } else {
-      const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu');
-      allMenus.forEach((item) => {
-        item.classList.remove(activeClass);
-      });
-      menu.classList.add(activeClass);
-    }
+  if (window.innerWidth >= 1200) return
+
+  const menu = event.currentTarget.nextElementSibling
+  const activeClass = 'active'
+  const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu')
+  if (!menu) return
+  allMenus.forEach((item) => item.classList.remove(activeClass))
+  menu.classList.toggle(activeClass)
 }
 
 const router = useRouter()
@@ -55,25 +57,19 @@ const allClose = () => {
   searchBtnToggle.value = false
 }
 
+const btnMap = {
+  member: memberBtnToggle,
+  cart: cartBtnToggle,
+  search: searchBtnToggle,
+}
+
 const btnToggle = (btn) => {
   let menu = false
-  if (btn === 'member') {
-    menu = memberBtnToggle.value
-  } else if (btn === 'cart') {
-    menu = cartBtnToggle.value
-  } else if (btn === 'search') {
-    menu = searchBtnToggle.value
-  }
+  const current = btnMap[btn]
+  menu = current.value
 
   allClose()
-
-  if (btn === 'member') {
-    memberBtnToggle.value = !menu
-  } else if (btn === 'cart') {
-    cartBtnToggle.value = !menu
-  } else if (btn === 'search') {
-    searchBtnToggle.value = !menu
-  }
+  current.value = !menu
 }
 
 const goTo = (url) => {
@@ -143,7 +139,9 @@ const goTo = (url) => {
                   </div>
                 </div>
               </div>
-              <NuxtLink @click="goTo('/cart')" class="to_cart">立即結帳</NuxtLink>
+              <NuxtLink @click="goTo('/cart')" class="to_cart"
+                >立即結帳</NuxtLink
+              >
             </div>
           </div>
         </li>

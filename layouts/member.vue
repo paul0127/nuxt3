@@ -1,8 +1,4 @@
 <script setup>
-import Header from '~/components/common/Header.vue';
-import Footer from '~/components/common/Footer.vue';
-import Title from '~/components/common/Title.vue';
-import memberLeft from '~/components/common/memberLeft.vue';
 const breads = reactive([
     {
         name: '會員專區',
@@ -12,18 +8,17 @@ const breads = reactive([
 </script>
 <template>
     <div>
-        <Header />
+        <commonHeader />
         <div class="container custom">
-            <Title :breads="breads" />
+            <commonTitle :breads="breads" />
             <div class="page member">
-                <memberLeft />
+                <commonMemberLeft />
                 <div class="right_frame">
-                    
                     <slot />
                 </div>
             </div>
         </div>
-        <Footer />
+        <commonFooter />
     </div>
 </template>
 <style lang="scss" src="./default.scss" />

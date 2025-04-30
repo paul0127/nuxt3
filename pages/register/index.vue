@@ -1,6 +1,4 @@
 <script setup>
-import Title from '~/components/common/Title.vue'
-
 const input = ref({
   account: '',
   password: '',
@@ -33,7 +31,7 @@ const register = async () => {
 </script>
 <template>
   <div class="container custom">
-    <Title
+    <commonTitle
       :breads="[
         {
           name: '會員專區',

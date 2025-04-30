@@ -1,5 +1,4 @@
 <script setup>
-import Title from '~/components/common/Title.vue'
 import { usePageApi } from '~/composables/api'
 
 const { pageData } = usePageApi()
@@ -35,7 +34,7 @@ useHead({
 
 <template>
   <div>
-    <Title :breads="breads" />
+    <commonTitle :breads="breads" />
     <div class="page onepage">
       <div class="info">
         <div class="name">{{dataBase.stitle}}</div>

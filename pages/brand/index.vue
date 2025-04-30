@@ -1,7 +1,5 @@
 <script setup>
-import Title from '~/components/common/Title.vue'
 import { useBrandApi } from '~/composables/api'
-
 
 const { getBrandList } = useBrandApi()
 
@@ -21,7 +19,7 @@ const breads = reactive([
 </script>
 <template>
   <div>
-    <Title :breads="breads" />
+    <CommonTitle :breads="breads" />
     <div class="page brand">
       <div class="list">
         <div class="item" v-for="item in dataBase" :key="item.id">

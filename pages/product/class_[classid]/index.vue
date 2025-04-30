@@ -1,6 +1,4 @@
 <script setup>
-import pager from '~/components/common/pager.vue'
-import Title from '~/components/common/Title.vue'
 import { currency } from '~/utils/filter.js'
 
 import { useProductApi } from '~/composables/api'
@@ -70,7 +68,7 @@ useHead({
 </script>
 <template>
   <div>
-    <Title
+    <commonTitle
       :breads="breads"
       :rightToggle="true"
       :numberOfProducts="dataBase.total"
@@ -86,7 +84,7 @@ useHead({
           :tabType="tabType"
           :classId="classId"
         />
-        <pager
+        <commonPager
           :total="dataBase.total"
           :page="dataBase.page"
           :limit="dataBase.limit"

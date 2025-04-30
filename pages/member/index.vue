@@ -62,17 +62,16 @@ definePageMeta({
         </div>
         <div class="item">
           <label for="">手機</label>
-          <el-input
-            v-model="dataBase.phone"
-            placeholder="請輸入您的手機"
-          />
+          <el-input v-model="dataBase.phone" placeholder="請輸入您的手機" />
         </div>
-        <div class="item inline">
+        <div class="item">
           <label for="">性別</label>
-          <el-radio-group v-model="dataBase.sex">
-            <el-radio :value="1" size="large">男</el-radio>
-            <el-radio :value="0" size="large">女</el-radio>
-          </el-radio-group>
+          <div>
+            <el-radio-group v-model="dataBase.sex">
+              <el-radio :value="1" size="large">男</el-radio>
+              <el-radio :value="0" size="large">女</el-radio>
+            </el-radio-group>
+          </div>
         </div>
       </div>
       <div class="send"><a @click="saveMemberInfoApi">確定修改</a></div>
@@ -80,3 +79,18 @@ definePageMeta({
   </div>
 </template>
 <style lang="scss" src="./form.scss" scoped />
+<style lang="scss" scoped>
+:deep(.el-input) {
+  font-size: 1.25rem;
+  &.el-date-editor {
+    width: 100%;
+  }
+  .el-radio.el-radio--large .el-radio__label {
+    font-size: 1.25rem;
+  }
+  .el-input__wrapper {
+    border: 1px solid #707070;
+    padding: 5px 10px;
+  }
+}
+</style>

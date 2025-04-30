@@ -1,4 +1,7 @@
 <script setup>
+const dataBase = ref({
+  old_password:''
+})
 definePageMeta({
   layout: 'member',
 })
@@ -10,6 +13,7 @@ definePageMeta({
       <div class="list">
         <div class="item full">
           <label for="">目前的密碼</label>
+          <el-input v-model="dataBase.old_password" placeholder="舊密碼" />
           <input type="text" placeholder="舊密碼" />
         </div>
         <div class="item full">

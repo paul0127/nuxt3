@@ -157,7 +157,7 @@ definePageMeta({
         </div>
       </div>
     </div>
-    <pager />
+    <commonPager />
   </div>
 </template>
 <style lang="scss" src="./form.scss" scoped />

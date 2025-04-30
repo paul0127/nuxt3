@@ -1,8 +1,5 @@
 <script setup>
-import pager from '~/components/common/pager.vue'
-import Title from '~/components/common/Title.vue'
 import { useNewsApi } from '~/composables/api'
-
 
 const { getNewsList } = useNewsApi()
 
@@ -47,7 +44,7 @@ useHead({
 </script>
 <template>
   <div>
-    <Title :breads="breads" />
+    <commonTitle :breads="breads" />
     <div class="page news">
       <div class="list">
         <NuxtLink
@@ -67,7 +64,7 @@ useHead({
           </div>
         </NuxtLink>
       </div>
-      <pager
+      <commonPager
         :total="dataBase.total"
         :page="dataBase.page"
         :limit="dataBase.limit"
