@@ -1,32 +1,97 @@
 <script setup>
-const input = ref({
+const dataBase = ref({
   account: '',
+  name: '',
+  birthday: '',
+  phone: '',
+  sex: 1,
   password: '',
-  repassword:'',
-  name:''
+  repassword: '',
 })
 
 const store = authStore()
 const router = useRouter()
 
+const formEl = useTemplateRef('formEl')
+const { validatePhone } = useCheckoutValidation()
+
+const validateCheckPhone = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('請輸入電話'))
+  } else {
+    if (validatePhone(value)) {
+      callback()
+    } else {
+      callback(new Error('電話格式不正確'))
+    }
+  }
+}
+
+const validatePass = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('請輸入密碼'))
+  } else {
+    const regex = /^[A-Za-z0-9]{6,}$/
+    if (!regex.test(value)) {
+      callback(new Error('需輸入6個字元以上的英文字母及數字，不可使用特殊符號'))
+    } else {
+      callback()
+    }
+  }
+}
+
+const validateRePass = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('請再輸入一次密碼'))
+  } else {
+    if (dataBase.value.password !== dataBase.value.repassword) {
+      callback(new Error('兩次輸入的密碼不相同'))
+    } else {
+      callback()
+    }
+  }
+}
+
+const rules = reactive({
+  account: [{ required: true, message: '請輸入帳號', trigger: 'blur' }],
+  birthday: [{ required: true, message: '請輸入生日', trigger: 'blur' }],
+  name: [{ required: true, message: '請輸入姓名', trigger: 'blur' }],
+  phone: [{ required: true, validator: validateCheckPhone, trigger: 'blur' }],
+  sex: [{ required: true, message: '請輸入性別', trigger: 'blur' }],
+  password: [{ required: true, validator: validatePass, trigger: 'blur' }],
+  repassword: [{ required: true, validator: validateRePass, trigger: 'blur' }],
+})
+
 const register = async () => {
-  if (!input.value.account || !input.value.password || !input.value.name) {
-    alert('請輸入帳號和密碼和姓名')
-    return
-  }
+  await formEl.value.validate()
 
-  if(input.value.password !== input.value.repassword) {
-    alert('兩次密碼輸入不相同')
-    return
-  }
-
-  const { account, password, name } = input.value
-  const result = await store.register({ account, password, name })
+  const { account, password, name, birthday, phone, sex } = dataBase.value
+  const [result, data, info] = await store.register({
+    account,
+    password,
+    name,
+    birthday,
+    phone,
+    sex,
+  })
   if (result) {
+    ElNotification({
+      title: '成功',
+      message: '已註冊成功',
+      type: 'success',
+    })
     router.push('/member')
   } else {
-    // alert('登入失敗，請檢查帳號和密碼')
+    ElNotification({
+      title: 'Error',
+      message: info,
+      type: 'error',
+    })
   }
+}
+
+const resetForm = () => {
+  formEl.value.resetFields()
 }
 </script>
 <template>
@@ -50,29 +115,121 @@ const register = async () => {
           <font-awesome-icon class="icon-right" :icon="['fab', 'pagelines']" />
         </div>
         <div class="inputs">
-          <div class="input">
-            <label for="">帳號/Email</label>
-            <input type="text" v-model="input.account" placeholder="請輸入您的信箱" />
-          </div>
-          <div class="input">
-            <label for="">姓名</label>
-            <input type="text" v-model="input.name" placeholder="請輸入您的姓名" />
-          </div>
-          <div class="input">
-            <label for="">密碼</label>
-            <input type="password" v-model="input.password" placeholder="請輸入您的密碼" />
-          </div>
-          <div class="input">
-            <label for="">再次密碼確認</label>
-            <input type="password" v-model="input.repassword" placeholder="再次輸入您的密碼" />
-          </div>
+          <el-form
+            ref="formEl"
+            :inline="true"
+            :model="dataBase"
+            :rules="rules"
+            label-width="auto"
+          >
+            <el-form-item label="帳號/Email" prop="account">
+              <el-input
+                v-model="dataBase.account"
+                placeholder="請輸入您的信箱"
+              />
+            </el-form-item>
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="dataBase.name" placeholder="請輸入您的姓名" />
+            </el-form-item>
+            <el-form-item label="出生日期" prop="birthday">
+              <el-date-picker
+                v-model="dataBase.birthday"
+                type="date"
+                placeholder="請選擇你的出生日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+              />
+            </el-form-item>
+            <el-form-item label="手機" prop="phone">
+              <el-input v-model="dataBase.phone" placeholder="請輸入您的手機" />
+            </el-form-item>
+            <el-form-item label="性別" prop="sex">
+              <el-radio-group v-model="dataBase.sex">
+                <el-radio :value="1" size="large">男</el-radio>
+                <el-radio :value="0" size="large">女</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item />
+            <el-form-item label="密碼" prop="password">
+              <el-input
+                type="password"
+                v-model="dataBase.password"
+                placeholder="請輸入您的密碼"
+              />
+            </el-form-item>
+            <el-form-item label="再次密碼確認" prop="repassword">
+              <el-input
+                type="password"
+                v-model="dataBase.repassword"
+                placeholder="再次輸入您的密碼"
+              />
+            </el-form-item>
+          </el-form>
         </div>
         <div class="btns">
           <div class="send_btn" @click="register">送出</div>
-          <div class="clear_btn">清除</div>
+          <div class="clear_btn" @click="resetForm">清除</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped src="./register.scss" />
+<style lang="scss" scoped>
+.inputs {
+  :deep(.el-form) {
+    flex: 0 0 100%;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    .el-form-item {
+      margin-right: 0;
+      margin-left: 0 !important;
+      margin-bottom: 30px;
+      display: block;
+      &.is-error {
+        .el-form-item__content {
+          .el-input__wrapper {
+            box-shadow: 0 0 0 1px var(--el-color-danger) inset;
+          }
+        }
+      }
+      .el-form-item__label-wrap {
+        margin-left: 0 !important;
+        .el-form-item__label {
+          font-size: 1.35rem;
+          color: #000;
+          font-weight: 600;
+          margin-bottom: 10px;
+        }
+      }
+      .el-form-item__content {
+        width: 450px;
+        .el-form-item__error {
+          font-size: 12px;
+          margin-top: 5px;
+        }
+        .el-input__wrapper {
+          box-shadow: 0 0 0 1px #707070 inset;
+
+          .el-input__inner {
+            font-size: 1.35rem;
+            height: 3rem;
+            line-height: 3rem;
+          }
+        }
+        .el-date-editor {
+          width: 100%;
+          height: 3rem;
+          .el-input__prefix {
+            svg {
+              width: 2rem;
+              height: 2rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>

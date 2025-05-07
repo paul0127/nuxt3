@@ -12,11 +12,25 @@ const dataBase = ref({
   sex: 0,
 })
 
+const { validatePhone } = useCheckoutValidation()
+
+const validateCheckPhone = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('請輸入電話'))
+  } else {
+    if (validatePhone(value)) {
+      callback()
+    }else{
+      callback(new Error('電話格式不正確'))
+    }
+  }
+}
+
 const rules = reactive({
   account: [{ required: true, message: '請輸入帳號', trigger: 'blur' }],
   birthday: [{ required: true, message: '請輸入生日', trigger: 'blur' }],
   name: [{ required: true, message: '請輸入姓名', trigger: 'blur' }],
-  phone: [{ required: true, message: '請輸入手機', trigger: 'blur' }],
+  phone: [{ validator: validateCheckPhone, trigger: 'blur' }],
   sex: [{ required: true, message: '請輸入性別', trigger: 'blur' }],
 })
 
@@ -72,7 +86,7 @@ definePageMeta({
             <el-date-picker
               v-model="dataBase.birthday"
               type="date"
-              placeholder="Pick a day"
+              placeholder="請選擇你的出生日期"
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
             />

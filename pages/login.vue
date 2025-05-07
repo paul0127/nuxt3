@@ -16,7 +16,11 @@ const router = useRouter()
 
 const login = async () => {
   if (!input.value.email || !input.value.password) {
-    alert('請輸入帳號和密碼')
+    ElNotification({
+      title: 'Error',
+      message: '請輸入帳號和密碼',
+      type: 'error',
+    })
     return
   }
 
@@ -25,7 +29,11 @@ const login = async () => {
   if (result) {
     router.push('/member')
   } else {
-    alert('登入失敗，請檢查帳號和密碼')
+    ElNotification({
+      title: 'Error',
+      message: '登入失敗，請檢查帳號和密碼',
+      type: 'error',
+    })
   }
 }
 
@@ -50,14 +58,6 @@ const login = async () => {
           </div>
           <font-awesome-icon class="icon-right" :icon="['fab', 'pagelines']" />
         </div>
-        <ul class="social_btns">
-          <li class="line_btn">
-            <font-awesome-icon :icon="['fab', 'line']" />
-          </li>
-          <li class="fb_btn">
-            <font-awesome-icon :icon="['fab', 'square-facebook']" />
-          </li>
-        </ul>
         <div class="inputs">
           <div class="input">
             <label for="">帳號/Email</label

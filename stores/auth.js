@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { useLoginApi } from '~/composables/api'
 
-
 export const authStore = defineStore('auth', {
   state: () => ({
     userInfo: null,
@@ -27,15 +26,15 @@ export const authStore = defineStore('auth', {
     },
     async register(obj) {
       const { getRegister } = useLoginApi()
-      const [result, data] = await getRegister(obj)
+      const [result, data, info] = await getRegister(obj)
       if (result) {
         this.setLogin(data.userInfo, data.token.token, data.token.exp)
         this.userInfo = data.userInfo
         this.token = data.token.token
 
-        return true
+        return [result, data, info]
       } else {
-        return false
+        return [result, data, info]
       }
     },
     logout() {

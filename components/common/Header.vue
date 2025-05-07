@@ -117,6 +117,7 @@ const goTo = (url) => {
           >
           <div class="dropDown" :class="{ active: cartBtnToggle }">
             <div class="cart_info">
+              <template v-if="cartList.length">
               <div class="list">
                 <div
                   class="item"
@@ -142,6 +143,12 @@ const goTo = (url) => {
               <NuxtLink @click="goTo('/cart')" class="to_cart"
                 >立即結帳</NuxtLink
               >
+            </template>
+            <template v-else>
+              <div class="empty">
+                購物車暫無商品
+              </div>
+            </template>
             </div>
           </div>
         </li>
@@ -290,6 +297,10 @@ header {
 
           .cart_info {
             display: block;
+
+            .empty{
+              font-size: 1rem;
+            }
 
             .list {
               display: block;

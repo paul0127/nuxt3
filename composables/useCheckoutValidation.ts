@@ -1,4 +1,3 @@
-// composables/useCheckoutValidation.ts
 import { ElNotification } from 'element-plus'
 
 export function useCheckoutValidation() {
@@ -36,8 +35,7 @@ export function useCheckoutValidation() {
       return false
     }
 
-    const regex = /^((02|03|037|04|049|05|06|07|08|082|0836)\d{6,8}|09\d{8})$/
-    if (!regex.test(dataBase.phone)) {
+    if (!validatePhone(dataBase.phone)){
       ElNotification({
         title: 'Error',
         message: '電話格式不正確',
@@ -47,6 +45,15 @@ export function useCheckoutValidation() {
     }
 
     return true
+  }
+
+  const validatePhone = (phone: string) => {
+    const regex = /^((02|03|037|04|049|05|06|07|08|082|0836)\d{6,8}|09\d{8})$/
+    if (!regex.test(phone)) {
+      return false
+    } else {
+      return true
+    }
   }
 
   const validateInvoice = (dataBase: any) => {
@@ -133,6 +140,7 @@ export function useCheckoutValidation() {
     validateCart,
     validatePaymentAndLogistics,
     validateRecipient,
+    validatePhone,
     validateInvoice,
     validateAddress,
     validateAll,

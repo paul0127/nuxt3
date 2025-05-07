@@ -53,10 +53,19 @@ const addMinusQty = (q) => {
 const toLoveApi = async () => {
   const [result, data, info] = await toLove({ pid: dataBase.value.info.p_id })
   if (result) {
-    alert(info)
+    ElNotification({
+      title: '成功',
+      message: info,
+      type: 'success',
+    })
     await getProductApi()
   }else{
-    alert(info)
+    ElNotification({
+      title: 'Error',
+      message: info,
+      type: 'error',
+    })
+    return
   }
 }
 

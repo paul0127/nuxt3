@@ -20,6 +20,11 @@ const qtyChange = (p_id, s_id, event) => {
 
 const deleteProduct = (p_id, s_id) => {
   store.addToCart('delete', { p_id, s_id })
+  ElNotification({
+      title: '成功',
+      message: '已成功移除商品',
+      type: 'success',
+    })
 }
 
 const router = useRouter()

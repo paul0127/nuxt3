@@ -1,3 +1,5 @@
+import { ElNotification } from 'element-plus'
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const store = authStore()
   await store.getLogin()
@@ -8,6 +10,16 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return navigateTo('/login')
   }
   if (to.name === 'login' && isLoggedIn) {
+    return navigateTo('/')
+  }
+
+  const cart = cartStore()
+  if (to.name === 'cart-payment' && cart.getCartDetail.length < 1) {
+    ElNotification({
+      title: 'Error',
+      message: '目前購物車暫無商品',
+      type: 'error',
+    })
     return navigateTo('/')
   }
 })
