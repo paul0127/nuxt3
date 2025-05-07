@@ -36,13 +36,15 @@ export const cartStore = defineStore('cart', {
         }
 
         if (action == 'delete') {
-          this.cart = this.cart.filter(item=>item.p_id != product.p_id && item.s_id != product.s_id)
+          this.cart = this.cart.filter(
+            (item) => item.p_id != product.p_id && item.s_id != product.s_id
+          )
         }
       } else {
         this.cart.push(product)
       }
       this.setCart()
-      this.getToCartDetail()
+      this.fetchCartDetail()
     },
     setCart() {
       const cart = useCookie('cart')
@@ -54,12 +56,18 @@ export const cartStore = defineStore('cart', {
         this.cart = cart
       }
     },
-    async getToCartDetail() {
+    async fetchCartDetailOnce() {
+      if (this.isCartLoaded) return
+      this.getCart()
+      await this.fetchCartDetail()
+    },
+    async fetchCartDetail() {
       const { getCartDetail } = useCartApi()
 
       const [result, data, info] = await getCartDetail(this.cart)
       if (result) {
         this.cartDetail = data
+        this.isCartLoaded = true
       }
     },
   },

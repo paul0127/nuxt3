@@ -102,7 +102,7 @@ const goTo = (url) => {
             <div class="dropDown" :class="{ active: memberBtnToggle }">
               <div class="login_info">
                 <NuxtLink @click="goTo('/login')">會員登入</NuxtLink>
-                <NuxtLink @click="goTo('/register')" href="./regist_index.html"
+                <NuxtLink @click="goTo('/register')"
                   >註冊新會員</NuxtLink
                 >
               </div>

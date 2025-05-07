@@ -14,6 +14,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   const cart = cartStore()
+  await cart.fetchCartDetailOnce()
   if (to.name === 'cart-payment' && cart.getCartDetail.length < 1) {
     ElNotification({
       title: 'Error',
