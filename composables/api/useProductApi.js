@@ -1,20 +1,20 @@
 export function useProductApi() {
-  const { get, post } = useApiFetch()
+  const { $get, $post } = useNuxtApp()
 
   const getProductList = async (req, res) => {
-    const [result, data] = await get('index.php?g=Api&m=Product&a=index', req)
+    const {result, data} = await $get('index.php?g=Api&m=Product&a=index', req)
 
     return [result, data]
   }
 
   const getProduct = async (req, res) => {
-    const [result, data] = await get('index.php?g=Api&m=Product&a=info', req)
+    const {result, data} = await $get('index.php?g=Api&m=Product&a=info', req)
 
     return [result, data]
   }
 
   const getProductItems = async (req, res) => {
-    const [result, data] = await get(
+    const {result, data} = await $get(
       'index.php?g=Api&m=Product&a=get_items',
       req
     )
@@ -23,7 +23,7 @@ export function useProductApi() {
   }
 
   const toLove = async (req, res) => {
-    const [result, data, info] = await post(
+    const {result, data, info} = await $post(
       'index.php?g=Api&m=Product&a=toLove',
       req
     )

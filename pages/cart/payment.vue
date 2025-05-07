@@ -1,3 +1,164 @@
+<script setup>
+import { useCartApi } from '~/composables/api'
+
+const { getLogistics, getPayment } = useCartApi()
+
+const receive = useCookie('receive')
+
+const dataBase = ref({
+  name: '',
+  phone: '',
+  county: null,
+  dist: null,
+  address: '',
+  memo: '',
+  logistics: null,
+  payment: null,
+  invoice_type: 0,
+  companyNo: '',
+  companyTitle: '',
+  CVSStoreID: null,
+  CVSStoreName: null,
+  CVSAddress: null,
+})
+
+const init = () => {
+  dataBase.value = {
+    ...receive.value,
+  }
+
+  const route = useRoute()
+  const { CVSAddress, CVSStoreID, CVSStoreName } = route.query
+  if (CVSAddress) dataBase.value.CVSAddress = CVSAddress
+  if (CVSStoreID) dataBase.value.CVSStoreID = CVSStoreID
+  if (CVSStoreName) dataBase.value.CVSStoreName = CVSStoreName
+}
+await init()
+
+const logisticsList = ref()
+const getLogisticsApi = async () => {
+  const [result, data] = await getLogistics()
+  if (result) {
+    logisticsList.value = data
+  }
+}
+await getLogisticsApi()
+
+// 取得付費方式
+const paymentList = ref()
+const getPaymentApi = async () => {
+  const [result, data] = await getPayment()
+  if (result) {
+    paymentList.value = data
+  }
+}
+await getPaymentApi()
+
+// 取得購物車資料
+const cart = cartStore()
+const cartList = computed(() => {
+  return cart.getCartDetail
+})
+// 計算購物車總費用
+const total = computed(() => {
+  let total = 0
+  cartList.value.forEach((item) => {
+    total = total + item.selling_price * item.qty
+  })
+  return total
+})
+
+const changeLogistics = () => {
+  dataBase.value.county = null
+  dataBase.value.dist = null
+  dataBase.value.address = null
+  dataBase.value.CVSStoreID = null
+  dataBase.value.CVSStoreName = null
+  dataBase.value.CVSAddress = null
+}
+
+const districts = ref(taiwan_districts)
+const distList = computed(() => {
+  if (dataBase.value.county) {
+    return districts.value.find((item) => item.name == dataBase.value.county)
+      .districts
+  } else {
+    return []
+  }
+})
+
+const getPostcode = computed(() => {
+  if (!dataBase.value.county) return null
+
+  const dist = districts.value.find(
+    (item) => item.name == dataBase.value.county
+  )?.districts
+
+  if (!dist || !dataBase.value.dist) return null
+
+  return dist.find((i) => i.name == dataBase.value.dist).zip
+})
+
+const selectLogistics = computed(() => {
+  if (dataBase.value.logistics == null) return null
+  return logisticsList.value.find(
+    (item) => item.logistics_id == dataBase.value.logistics
+  )
+})
+
+const fare = computed(() => {
+  if (!selectLogistics.value) return 0
+  if (selectLogistics.value.limit_price > total.value) {
+    return selectLogistics.value.value
+  } else {
+    return 0
+  }
+})
+
+// 取得超商地圖
+const url = useRequestURL()
+const get_map = async () => {
+  receive.value = JSON.stringify(dataBase.value)
+
+  const form = document.createElement('form')
+  const data = {
+    ...dataBase.value,
+    LogisticsSubType:
+      selectLogistics.value.type == 0
+        ? 0
+        : selectLogistics.value.type == 1
+        ? 'UNIMARTC2C'
+        : 'FAMIC2C',
+    url: url.origin,
+  }
+  form.method = 'POST'
+  // form.target = '_blank'
+  form.action = `https://php.e-office.tw/index.php?g=Api&m=Api&a=get_map`
+  form.style.display = 'none'
+
+  // 加入資料欄位
+  for (const key in data) {
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.name = key
+    input.value = data[key]
+    form.appendChild(input)
+  }
+
+  document.body.appendChild(form)
+  form.submit()
+}
+
+const { validateAll } = useCheckoutValidation()
+
+const send = () => {
+  if (!validateAll(cartList.value, dataBase.value, selectLogistics.value)) {
+    return
+  }
+
+  console.log('send', dataBase.value, cartList.value)
+}
+</script>
 <template>
   <div class="container custom">
     <commonTitle
@@ -21,49 +182,43 @@
             <div class="th m_total">小計</div>
           </div>
           <div class="body">
-            <div class="tr">
+            <div class="tr" v-for="(item, index) in cartList" :key="index">
               <div class="td image">
-                <img src="@/assets/cart/product.png" alt="" />
+                <img :src="`${urlBase}${item.pic}`" alt="" />
               </div>
               <div class="td_group">
                 <div class="td product_name">
-                  <a href="#">本期07月每刊好物(2107-02 )美髮轉燈水槍</a>
+                  <NuxtLink :to="item.url">{{ item.p_title }}</NuxtLink>
                 </div>
-                <div class="td spec">-</div>
-                <div class="td price" data-label="單價:">$79</div>
-                <div class="td qty" data-label="數量:">1</div>
-                <div class="td m_total" data-label="小計:">$79</div>
-              </div>
-            </div>
-            <div class="tr">
-              <div class="td image">
-                <img src="@/assets/cart/product.png" alt="" />
-              </div>
-              <div class="td_group">
-                <div class="td product_name">
-                  <a href="#">本期07月每刊好物(2107-02 )美髮轉燈水槍</a>
+                <div class="td spec">
+                  {{ item.specification ? item.specification : '-' }}
                 </div>
-                <div class="td spec">-</div>
-                <div class="td price" data-label="單價:">$79</div>
-                <div class="td qty" data-label="數量:">1</div>
-                <div class="td m_total" data-label="小計:">$79</div>
+                <div class="td price" data-label="單價:">
+                  ${{ item.selling_price }}
+                </div>
+                <div class="td qty" data-label="數量:">{{ item.qty }}</div>
+                <div class="td m_total" data-label="小計:">
+                  ${{ item.selling_price * item.qty }}
+                </div>
               </div>
             </div>
           </div>
           <div class="foot">
             <div class="tr">
               <div class="td">小計</div>
-              <div class="td m_total">$1000</div>
+              <div class="td m_total">${{ total }}</div>
             </div>
             <div class="tr">
               <div class="td">運費</div>
-              <div class="td m_total">$50</div>
+              <div class="td m_total">${{ fare }}</div>
             </div>
             <div class="tr">
               <div class="td">應付總額</div>
-              <div class="td m_total">$1050</div>
+              <div class="td m_total">${{ total + fare }}</div>
             </div>
-            <div class="alert">(再買861元即將享有運費)</div>
+            <div class="alert" v-if="selectLogistics && fare !== 0">
+              (再買{{ selectLogistics.limit_price - total }}元即將享有免運費)
+            </div>
           </div>
         </div>
         <div class="information">
@@ -71,14 +226,33 @@
             <div class="name">付款方式及寄送方式</div>
             <div class="pay_logistic_select">
               <label for="">付款方式</label>
-              <select name="" id="">
-                <option value="null">請選擇付款方式</option>
+              <select name="" id="" v-model="dataBase.payment">
+                <option :value="null">請選擇付款方式</option>
+                <option
+                  v-for="(item, index) in paymentList"
+                  :key="index"
+                  :value="index"
+                >
+                  {{ item }}
+                </option>
               </select>
             </div>
             <div class="pay_logistic_select">
               <label for="">寄貨方式</label>
-              <select name="" id="">
-                <option value="null">請選擇寄貨方式</option>
+              <select
+                name=""
+                id=""
+                v-model="dataBase.logistics"
+                @change="changeLogistics()"
+              >
+                <option :value="null">請選擇寄貨方式</option>
+                <option
+                  v-for="item in logisticsList"
+                  :key="item.logistics_id"
+                  :value="item.logistics_id"
+                >
+                  {{ item.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -90,95 +264,115 @@
             <div class="name">收件人資料</div>
             <div class="list">
               <div class="item">
-                <label for="">收件人姓名</label>
-                <input type="text" placeholder="請輸入收件人姓名" />
-              </div>
-              <div class="item">
-                <label for="">連絡電話</label>
-                <input type="text" placeholder="請輸入連絡電話" />
-              </div>
-              <div class="item">
-                <label for="">市話</label>
-                <div class="tel_type">
-                  <input type="text" />
-                  <span></span>
-                  <input type="text" placeholder="請輸入您的市話" />
-                </div>
-              </div>
-              <div class="item">
-                <label for="">收件地址</label>
-                <div class="address_type">
-                  <select name="" id="" class="city">
-                    <option value="台北市">台北市</option>
-                  </select>
-                  <select name="" id="" class="block">
-                    <option value="中正區">中正區</option>
-                  </select>
-                  <input type="text" class="code" />
-                  <input
-                    type="text"
-                    class="addr"
-                    placeholder="請輸入您的地址"
-                  />
-                </div>
-              </div>
-              <div class="item">
                 <label for="">電子發票</label>
                 <div class="radio_type">
-                  <input type="radio" name="invoice" id="personal" />
+                  <input
+                    type="radio"
+                    name="invoice"
+                    id="personal"
+                    v-model="dataBase.invoice_type"
+                    :value="0"
+                  />
                   <label for="personal"
                     ><span class="circle"></span>個人發票(二聯式)</label
                   >
-                  <input type="radio" name="invoice" id="company" />
+                  <input
+                    type="radio"
+                    name="invoice"
+                    id="company"
+                    v-model="dataBase.invoice_type"
+                    :value="1"
+                  />
                   <label for="company"
                     ><span class="circle"></span>公司戶(三聯式)</label
                   >
                 </div>
               </div>
-              <div class="item half">
-                <label for="">統一編號</label>
-                <input type="text" placeholder="請輸入統一編號" />
-              </div>
-              <div class="item half">
-                <label for="">發票抬頭</label>
-                <input type="text" placeholder="請填寫發票抬頭" />
-              </div>
-              <div class="item">
-                <div class="radio_type">
-                  <input type="radio" name="type" id="type_0" />
-                  <label for="type_0"
-                    ><span class="circle"></span>同購買人</label
-                  >
-                  <input type="radio" name="type" id="type_1" />
-                  <label for="type_1"
-                    ><span class="circle"></span>選擇常用收件人資訊</label
-                  >
-                  <input type="radio" name="type" id="type_2" />
-                  <label for="type_2"
-                    ><span class="circle"></span>新增收件人</label
-                  >
+              <template v-if="dataBase.invoice_type">
+                <div class="item half">
+                  <label for="">統一編號</label>
+                  <input
+                    type="text"
+                    v-model="dataBase.companyNo"
+                    placeholder="請輸入統一編號"
+                  />
                 </div>
+                <div class="item half">
+                  <label for="">發票抬頭</label>
+                  <input
+                    type="text"
+                    v-model="dataBase.companyTitle"
+                    placeholder="請填寫發票抬頭"
+                  />
+                </div>
+              </template>
+
+              <div class="item">
+                <label for="">收件人姓名</label>
+                <input
+                  type="text"
+                  placeholder="請輸入收件人姓名"
+                  v-model="dataBase.name"
+                />
               </div>
               <div class="item">
+                <label for="">連絡電話</label>
+                <input
+                  type="text"
+                  placeholder="請輸入連絡電話"
+                  v-model="dataBase.phone"
+                />
+              </div>
+              <div
+                class="item"
+                v-if="selectLogistics && selectLogistics.type == 0"
+              >
                 <label for="">收件地址</label>
                 <div class="address_type">
-                  <select name="" id="" class="city">
-                    <option value="台北市">台北市</option>
+                  <select name="" id="" class="city" v-model="dataBase.county">
+                    <option :value="null">請選擇縣市</option>
+                    <option
+                      v-for="(county, index) in taiwan_districts"
+                      :key="index"
+                      :value="county.name"
+                    >
+                      {{ county.name }}
+                    </option>
                   </select>
-                  <select name="" id="" class="block">
-                    <option value="中正區">中正區</option>
+                  <select name="" id="" class="block" v-model="dataBase.dist">
+                    <option :value="null">請選擇行政區</option>
+                    <option
+                      v-for="(dist, index) in distList"
+                      :key="index"
+                      :value="dist.name"
+                    >
+                      {{ dist.name }}
+                    </option>
                   </select>
-                  <input type="text" class="code" />
+                  <input type="text" class="code" :value="getPostcode" />
                   <input
                     type="text"
                     class="addr"
                     placeholder="請輸入您的地址"
+                    v-model="dataBase.address"
                   />
+                </div>
+              </div>
+              <div
+                class="item"
+                v-if="selectLogistics && selectLogistics.type != 0"
+              >
+                <label for="">收件超商地址<b>*</b></label>
+                <div>
+                  <p>取貨門市店號：{{ dataBase.CVSStoreID }}</p>
+                  <p>取貨門市名稱：{{ dataBase.CVSStoreName }}</p>
+                  <p>取貨門市地址：{{ dataBase.CVSAddress }}</p>
+                  <div><button @click="get_map()">查詢超商資料</button></div>
                 </div>
               </div>
             </div>
           </div>
-          <button class="send">立即結帳</button>
+          <button class="send" @click="send()">立即結帳</button>
         </div>
       </div>
     </div>
@@ -569,6 +763,9 @@
 
               input[type='radio'] {
                 display: none;
+                &:checked + label span.circle::before {
+                  background-color: #333;
+                }
               }
 
               label {
@@ -594,10 +791,6 @@
                     height: 10px;
                     border-radius: 100%;
                   }
-                }
-
-                input[type='radio']:checked + & span.circle::before {
-                  background-color: #333;
                 }
               }
             }

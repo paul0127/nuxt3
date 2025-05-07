@@ -1,7 +1,68 @@
 <script setup>
+import { useMemberApi } from '~/composables/api'
+
+const { saveMemberPassword } = useMemberApi()
+
+const formEl = useTemplateRef('formEl')
 const dataBase = ref({
-  old_password:''
+  old_password: '',
+  new_password: '',
+  re_password: '',
 })
+
+const validatePass = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('請輸入新的密碼'))
+  } else {
+    const regex = /^[A-Za-z0-9]{6,}$/
+    if (!regex.test(value)) {
+      callback(new Error('需輸入6個字元以上的英文字母及數字，不可使用特殊符號'))
+    } else {
+      callback()
+    }
+  }
+}
+
+const validateRePass = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('請再輸入一次新的密碼'))
+  } else {
+    if (dataBase.value.new_password !== dataBase.value.re_password) {
+      callback(new Error('兩次輸入的密碼不相同'))
+    } else {
+      callback()
+    }
+  }
+}
+
+const rules = reactive({
+  old_password: [{ required: true, message: '請輸入舊密碼', trigger: 'blur' }],
+  new_password: [{ validator: validatePass, trigger: 'blur' }],
+  re_password: [{ validator: validateRePass, trigger: 'blur' }],
+})
+
+const savePassword = async () => {
+  await formEl.value.validate()
+  const [result, data, info] = await saveMemberPassword({
+    old_password: dataBase.value.old_password,
+    new_password: dataBase.value.new_password,
+  })
+  if (result) {
+    ElNotification({
+      title: '成功修改密碼',
+      message: '已修改密碼',
+      type: 'success',
+    })
+
+    formEl.value.resetFields()
+  } else {
+    ElNotification({
+      title: 'Error',
+      message: info,
+      type: 'error',
+    })
+  }
+}
 definePageMeta({
   layout: 'member',
 })
@@ -11,24 +72,39 @@ definePageMeta({
     <div class="m_title">更改密碼</div>
     <div class="form">
       <div class="list">
-        <div class="item full">
-          <label for="">目前的密碼</label>
-          <el-input v-model="dataBase.old_password" placeholder="舊密碼" />
-          <input type="text" placeholder="舊密碼" />
-        </div>
-        <div class="item full">
-          <label for="">新密碼</label>
-          <input type="text" placeholder="新輸入新密碼" />
-          <span class="alert_text"
-            >*請輸入6個字元以上的英文字母及數字，不可使用特殊符號</span
-          >
-        </div>
-        <div class="item full">
-          <label for="">新密碼確認</label>
-          <input type="text" placeholder="請再次輸入新密碼" />
-        </div>
+        <el-form
+          ref="formEl"
+          :model="dataBase"
+          label-width="auto"
+          :rules="rules"
+        >
+          <el-form-item label="目前的密碼" prop="old_password">
+            <el-input
+              type="password"
+              v-model="dataBase.old_password"
+              placeholder="舊密碼"
+            />
+          </el-form-item>
+          <el-form-item label="新密碼" prop="new_password">
+            <el-input
+              type="password"
+              v-model="dataBase.new_password"
+              placeholder="請輸入新密碼"
+            />
+            <span class="alert_text"
+              >*請輸入6個字元以上的英文字母及數字，不可使用特殊符號</span
+            >
+          </el-form-item>
+          <el-form-item label="新密碼確認" prop="re_password">
+            <el-input
+              type="password"
+              v-model="dataBase.re_password"
+              placeholder="請再次輸入新密碼"
+            />
+          </el-form-item>
+        </el-form>
       </div>
-      <div class="send"><a href="">確定修改</a></div>
+      <div class="send"><a @click="savePassword()">確定修改</a></div>
     </div>
   </div>
 </template>

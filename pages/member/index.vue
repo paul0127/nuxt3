@@ -3,6 +3,7 @@ import { useMemberApi } from '~/composables/api'
 
 const { getMemberInfo, saveMemberInfo } = useMemberApi()
 
+const formEl = useTemplateRef('formEl')
 const dataBase = ref({
   account: '',
   birthday: '',
@@ -10,6 +11,15 @@ const dataBase = ref({
   phone: '',
   sex: 0,
 })
+
+const rules = reactive({
+  account: [{ required: true, message: '請輸入帳號', trigger: 'blur' }],
+  birthday: [{ required: true, message: '請輸入生日', trigger: 'blur' }],
+  name: [{ required: true, message: '請輸入姓名', trigger: 'blur' }],
+  phone: [{ required: true, message: '請輸入手機', trigger: 'blur' }],
+  sex: [{ required: true, message: '請輸入性別', trigger: 'blur' }],
+})
+
 const getMemberInfoApi = async () => {
   const [result, data] = await getMemberInfo()
   if (result) {
@@ -19,11 +29,20 @@ const getMemberInfoApi = async () => {
 await getMemberInfoApi()
 
 const saveMemberInfoApi = async () => {
-  const [result, data] = await saveMemberInfo(dataBase.value)
+  await formEl.value.validate()
+  const [result, data, info] = await saveMemberInfo(dataBase.value)
   if (result) {
-    alert('修改成功')
+    ElNotification({
+      title: '成功',
+      message: '已修改資料',
+      type: 'success',
+    })
   } else {
-    alert('修改失敗')
+    ElNotification({
+      title: 'Error',
+      message: info,
+      type: 'error',
+    })
   }
 }
 
@@ -36,21 +55,20 @@ definePageMeta({
     <div class="m_title" @click="getMemberInfoApi">個人資訊</div>
     <div class="form">
       <div class="list">
-        <div class="item">
-          <label for="">帳號/Email</label>
-          <el-input
-            v-model="dataBase.account"
-            disabled
-            placeholder="請輸入您的姓名"
-          />
-        </div>
-        <div class="item">
-          <label for="">姓名</label>
-          <el-input v-model="dataBase.name" placeholder="請輸入您的姓名" />
-        </div>
-        <div class="item">
-          <label for="">出生日期</label>
-          <div class="birth_type">
+        <el-form
+          ref="formEl"
+          :inline="true"
+          :model="dataBase"
+          :rules="rules"
+          :label-width="120"
+        >
+          <el-form-item label="帳號/Email" prop="account">
+            <el-input :value="dataBase.account" disabled />
+          </el-form-item>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="dataBase.name" placeholder="請輸入您的姓名" />
+          </el-form-item>
+          <el-form-item label="出生日期" prop="birthday">
             <el-date-picker
               v-model="dataBase.birthday"
               type="date"
@@ -58,21 +76,17 @@ definePageMeta({
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
             />
-          </div>
-        </div>
-        <div class="item">
-          <label for="">手機</label>
-          <el-input v-model="dataBase.phone" placeholder="請輸入您的手機" />
-        </div>
-        <div class="item">
-          <label for="">性別</label>
-          <div>
+          </el-form-item>
+          <el-form-item label="手機" prop="phone">
+            <el-input v-model="dataBase.phone" placeholder="請輸入您的手機" />
+          </el-form-item>
+          <el-form-item label="性別" prop="sex">
             <el-radio-group v-model="dataBase.sex">
               <el-radio :value="1" size="large">男</el-radio>
               <el-radio :value="0" size="large">女</el-radio>
             </el-radio-group>
-          </div>
-        </div>
+          </el-form-item>
+        </el-form>
       </div>
       <div class="send"><a @click="saveMemberInfoApi">確定修改</a></div>
     </div>

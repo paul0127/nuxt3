@@ -1,14 +1,14 @@
 export function useCartApi() {
-  const { get, post } = useApiFetch()
+  const { $get, $post } = useNuxtApp()
 
   const addCart = async (req, res) => {
-    const [result, data] = await post('index.php?g=Api&m=Gwc&a=gwcTemp', req)
+    const {result, data} = await $post('index.php?g=Api&m=Gwc&a=gwcTemp', req)
 
     return [result, data]
   }
 
   const getCartDetail = async (req, res) => {
-    const [result, data, info] = await post(
+    const {result, data, info} = await $post(
       'index.php?g=Api&m=Product&a=getProductDetail',
       req
     )
@@ -16,8 +16,28 @@ export function useCartApi() {
     return [result, data, info]
   }
 
+  const getLogistics = async (req, res) => {
+    const {result, data} = await $post(
+      'index.php?g=Api&m=Gwc&a=get_logistics',
+      req
+    )
+
+    return [result, data]
+  }
+
+  const getPayment = async (req, res) => {
+    const {result, data} = await $post(
+      'index.php?g=Api&m=Gwc&a=get_payment',
+      req
+    )
+
+    return [result, data]
+  }
+
   return {
     addCart,
     getCartDetail,
+    getLogistics,
+    getPayment
   }
 }

@@ -1,8 +1,4 @@
 <script setup>
-import { useProductApi } from '~/composables/api'
-
-const { toLove } = useProductApi()
-
 const cart = cartStore()
 const cartList = computed(() => {
   return cart.getCartDetail
@@ -16,13 +12,14 @@ const total = computed(() => {
   return total
 })
 
-const toLoveApi = async (item) => {
-  const [result, data, info] = await toLove({ pid: item.p_id })
-  if (result) {
-    alert(info)
-  }else{
-    alert(info)
-  }
+const store = cartStore()
+
+const qtyChange = (p_id, s_id, event) => {
+  store.addToCart('save', { p_id, s_id, qty: event.target.value })
+}
+
+const deleteProduct = (p_id, s_id) => {
+  store.addToCart('delete', { p_id, s_id })
 }
 
 const router = useRouter()
@@ -42,7 +39,7 @@ const router = useRouter()
         <div class="name">購物車清單</div>
         <div class="list">
           <div class="item">
-            <div class="table">
+            <div class="table" v-if="cartList.length">
               <div class="head">
                 <div class="th image"></div>
                 <div class="th product_name">商品</div>
@@ -68,20 +65,27 @@ const router = useRouter()
                       ${{ item.selling_price }}
                     </div>
                     <div class="td qty">
-                      <select :value="item.qty" @change="qtyChange(item.p_id,item.s_id)" name="" id="">
-                        <option :value="1">1</option>
-                        <option :value="2">2</option>
-                        <option :value="3">3</option>
-                        <option :value="4">4</option>
-                        <option :value="5">5</option>
+                      <select
+                        :value="item.qty"
+                        @change="qtyChange(item.p_id, item.s_id, $event)"
+                        name=""
+                        id=""
+                      >
+                        <option :value="q" v-for="q in item.qty + 5" :key="q">
+                          {{ q }}
+                        </option>
                       </select>
                     </div>
                     <div class="td m_total" data-label="小計:">
                       ${{ item.selling_price * item.qty }}
                     </div>
                     <div class="td operate">
-                      <button class="add_favorite" @click="toLoveApi(item.p_id)">加入收藏</button
-                      ><button class="del_item">移除</button>
+                      <button
+                        class="del_item"
+                        @click="deleteProduct(item.p_id, item.s_id)"
+                      >
+                        移除
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -94,6 +98,7 @@ const router = useRouter()
                 </div>
               </div>
             </div>
+            <div v-else>目前購物車無商品</div>
           </div>
         </div>
         <div class="bottom">

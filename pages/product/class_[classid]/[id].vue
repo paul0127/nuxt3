@@ -1,4 +1,6 @@
 <script setup>
+import { ElNotification  } from 'element-plus'
+
 import swiper from '~/components/kits/swiper.vue'
 import { useProductApi } from '~/composables/api'
 
@@ -65,7 +67,13 @@ const addCart = async () => {
     s_id: select_item.value,
     qty: qty.value,
   }
-  store.addToCart(product)
+  store.addToCart('add',product)
+
+  ElNotification({
+    title: '成功加入購物車',
+    message: '已加入購物車',
+    type: 'success',
+  })
 }
 
 const breads = reactive([

@@ -3,29 +3,46 @@ import { useCartApi } from '~/composables/api'
 
 export const cartStore = defineStore('cart', {
   state: () => ({
-    cartDetail:[],
+    cartDetail: [],
     cart: [],
   }),
   getters: {
     getCartDetail: (state) => state.cartDetail,
   },
   actions: {
-    async addToCart(product) {
+    async addToCart(action, product) {
       const res = this.cart.findIndex(
-        item => item.p_id == product.p_id && item.s_id == product.s_id
+        (item) => item.p_id == product.p_id && item.s_id == product.s_id
       )
       if (res !== -1) {
-        this.cart = this.cart.map(item=>{
-          if(item.p_id==product.p_id && item.s_id == product.s_id){
-            item.qty = item.qty + product.qty
-          }
+        if (action == 'add') {
+          this.cart = this.cart.map((item) => {
+            if (item.p_id == product.p_id && item.s_id == product.s_id) {
+              item.qty = item.qty + product.qty
+            }
 
-          return item
-        })
+            return item
+          })
+        }
+
+        if (action == 'save') {
+          this.cart = this.cart.map((item) => {
+            if (item.p_id == product.p_id && item.s_id == product.s_id) {
+              item.qty = product.qty
+            }
+
+            return item
+          })
+        }
+
+        if (action == 'delete') {
+          this.cart = this.cart.filter(item=>item.p_id != product.p_id && item.s_id != product.s_id)
+        }
       } else {
         this.cart.push(product)
       }
       this.setCart()
+      this.getToCartDetail()
     },
     setCart() {
       const cart = useCookie('cart')
@@ -37,13 +54,13 @@ export const cartStore = defineStore('cart', {
         this.cart = cart
       }
     },
-    async getToCartDetail(){
+    async getToCartDetail() {
       const { getCartDetail } = useCartApi()
 
-      const [result,data, info] = await getCartDetail(this.cart)
-      if(result){
+      const [result, data, info] = await getCartDetail(this.cart)
+      if (result) {
         this.cartDetail = data
       }
-    }
+    },
   },
 })
