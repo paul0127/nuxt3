@@ -47,6 +47,7 @@ const menuItemToggle = (event) => {
 }
 
 const router = useRouter()
+const route = useRoute()
 const memberBtnToggle = ref(false)
 const cartBtnToggle = ref(false)
 const searchBtnToggle = ref(false)
@@ -72,10 +73,14 @@ const btnToggle = (btn) => {
   current.value = !menu
 }
 
-const goTo = (url) => {
-  router.push(url)
-  allClose()
-}
+watch(
+  () => route.path,
+  (newVal) => {
+    allClose()
+  },{
+    immediate: true,
+  }
+)
 </script>
 <template>
   <header>
@@ -101,8 +106,8 @@ const goTo = (url) => {
             /></a>
             <div class="dropDown" :class="{ active: memberBtnToggle }">
               <div class="login_info">
-                <NuxtLink @click="goTo('/login')">會員登入</NuxtLink>
-                <NuxtLink @click="goTo('/register')"
+                <NuxtLink to="/login">會員登入</NuxtLink>
+                <NuxtLink to="/register"
                   >註冊新會員</NuxtLink
                 >
               </div>
@@ -140,7 +145,7 @@ const goTo = (url) => {
                   </div>
                 </div>
               </div>
-              <NuxtLink @click="goTo('/cart')" class="to_cart"
+              <NuxtLink to="/cart" class="to_cart"
                 >立即結帳</NuxtLink
               >
             </template>
