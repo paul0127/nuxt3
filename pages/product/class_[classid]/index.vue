@@ -1,18 +1,27 @@
-<script setup>
-import { currency } from '~/utils/filter.js'
-
+<script lang="ts" setup>
 import { useProductApi } from '~/composables/api'
+import type { ProductListResponse } from '~/types'
 
 const { getProductList } = useProductApi()
 
 const route = useRoute()
 
-const dataBase = ref({
-  list:[]
+const dataBase = ref<ProductListResponse>({
+  info: {
+    id: '',
+    cname: '',
+    Keywords: '',
+    Descript: '',
+  },
+  list: [],
+  limit: 0,
+  page: 0,
+  total: 0,
+  order: '',
 })
-const orderType = ref(null)
+const orderType = ref<'asc' | 'desc' | null>(null)
 
-const getProductListApi = async () => {
+const getProductListApi = async (): Promise<void> => {
   if (route.query.orderType == 'asc' || route.query.orderType == 'desc') {
     orderType.value = route.query.orderType
   } else {
@@ -29,13 +38,17 @@ const getProductListApi = async () => {
 }
 await getProductListApi()
 
-const tabType = ref('grid')
+const tabType = ref<'grid' | 'list'>('grid')
 
-const classId = ref(route.params.classid)
+const classId = ref<string>(
+  Array.isArray(route.params.classid)
+    ? route.params.classid[0]
+    : route.params.classid || ''
+)
 
 onMounted(() => {
   const tab = localStorage.getItem('tabType')
-  if (tab) {
+  if (tab == 'grid' || tab == 'list') {
     tabType.value = tab
   } else {
     tabType.value = 'grid'
@@ -43,7 +56,7 @@ onMounted(() => {
   }
 })
 
-const tabClick = (value) => {
+const tabClick = (value: 'grid' | 'list') => {
   tabType.value = value
   localStorage.setItem('tabType', value)
 }
@@ -61,7 +74,7 @@ useHead({
     { name: 'description', content: dataBase.value.info.Descript },
     {
       name: 'keywords',
-      content: dataBase.value.info.keywords,
+      content: dataBase.value.info.Keywords,
     },
   ],
 })

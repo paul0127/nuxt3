@@ -1,32 +1,37 @@
-<script setup>
+<script setup lang="ts">
 import { calcTime } from '~/utils/day.js'
-const props = defineProps({
-  layoutData: {
-    type: Object,
-    default: () => ({}),
-  },
-})
+import type { IndexBlock } from '~/types'
+
+const props = defineProps<{
+  layoutData: IndexBlock<'news'>
+}>()
 
 const limit = 3
-props.layoutData.list = props.layoutData.list.slice(0, limit)
+props.layoutData.block = props.layoutData.block.slice(0, limit)
+
 </script>
 <template>
   <div class="index_news">
     <div class="b_title">
       <div class="inner">
-        <div class="name">{{layoutData.name}}</div>
-        <div class="s_name">{{layoutData.ename}}</div>
+        <div class="name">{{ layoutData.name }}</div>
+        <div class="s_name">{{ layoutData.ename }}</div>
       </div>
     </div>
     <div class="list">
-      <NuxtLink class="item" v-for="item in layoutData.list" :key="item.n_id" :to="`/news/${item.n_id}`">
+      <NuxtLink
+        class="item"
+        v-for="item in layoutData.block"
+        :key="item.n_id"
+        :to="`/news/${item.n_id}`"
+      >
         <div class="inner">
           <div class="image">
             <img :src="`${urlBase}${item.n_pic}`" alt="" />
           </div>
-          <div class="time">{{calcTime(item.n_pubdate)}}</div>
+          <div class="time">{{ calcTime(item.n_pubdate) }}</div>
           <div class="name">
-            {{item.n_title}}
+            {{ item.n_title }}
           </div>
         </div>
       </NuxtLink>

@@ -1,78 +1,74 @@
-<script setup>
-const props = defineProps({
-  breads: {
-    type: Array,
-    default: [],
-  },
-  rightToggle: {
-    type: Boolean,
-    default: false,
-  },
-  orderType: {
-    type: String,
-    default: null,
-  },
-  numberOfProducts: {
-    type: Number,
-    default: 0,
-  },
-  tabType: {
-    type: String,
-    default: 'grid',
-  },
-})
+<script setup lang="ts">
+const props = defineProps<{
+  breads: { name: string; link: string }[]
+  rightToggle?: boolean
+  numberOfProducts?: number
+  orderType?: 'asc' | 'desc' | null
+  tabType?: 'grid' | 'list'
+}>()
 
-const titleOrderType = ref(null)
+const titleOrderType = ref<'asc' | 'desc' | null | undefined>(null)
 
 watch(
   () => props.orderType,
   (newVal) => {
     titleOrderType.value = newVal
-  },{
+  },
+  {
     immediate: true,
   }
 )
 
-const emit = defineEmits(['tabClick','orderTypeChange'])
-const tabClick = (value)=>{
-  emit('tabClick',value)
+const emit = defineEmits<{
+  (e: 'tabClick', value: 'grid' | 'list'): void
+  (e: 'orderTypeChange'): void
+}>()
+
+const tabClick = (value: 'grid' | 'list') => {
+  emit('tabClick', value)
 }
 
 const route = useRoute()
 const router = useRouter()
 
-const orderTypeChange = async ()=>{
+const orderTypeChange = async () => {
   if (!titleOrderType.value) {
-    await router.push({ query: {...route.query,orderType:null} })
+    await router.push({ query: { ...route.query, orderType: null } })
   } else {
-    await router.push({ query: { ...route.query,orderType: titleOrderType.value } })
+    await router.push({
+      query: { ...route.query, orderType: titleOrderType.value },
+    })
   }
 
   emit('orderTypeChange')
 }
 </script>
 <template>
-    <div class="title">
-        <ul class="bread">
-          <li v-for="(bread,index) in breads" :key="index">
-            <NuxtLink :to="bread.url">{{bread.name}}</NuxtLink>
-          </li>
-        </ul>
-        <div class="right" v-if="rightToggle">
-          <div class="select">
-            <select v-model="titleOrderType" @change="orderTypeChange">
-              <option :value="null">預設排列</option>
-              <option :value="'desc'">價格高到低</option>
-              <option :value="'asc'">價格低到高</option>
-            </select>
-          </div>
-          <div class="product_total">共{{numberOfProducts}}件商品</div>
-          <ul class="tab_btns">
-            <li :class="[{'active':tabType=='grid' }]" @click="tabClick('grid')"><font-awesome-icon icon="grip" /></li>
-            <li :class="[{'active':tabType=='list' }]" @click="tabClick('list')"><font-awesome-icon icon="list" /></li>
-          </ul>
-        </div>
+  <div class="title">
+    <ul class="bread">
+      <li v-for="(bread, index) in breads" :key="index">
+        <NuxtLink :to="bread.link">{{ bread.name }}</NuxtLink>
+      </li>
+    </ul>
+    <div class="right" v-if="rightToggle">
+      <div class="select">
+        <select v-model="titleOrderType" @change="orderTypeChange">
+          <option :value="null">預設排列</option>
+          <option :value="'desc'">價格高到低</option>
+          <option :value="'asc'">價格低到高</option>
+        </select>
+      </div>
+      <div class="product_total">共{{ numberOfProducts }}件商品</div>
+      <ul class="tab_btns">
+        <li :class="[{ active: tabType == 'grid' }]" @click="tabClick('grid')">
+          <font-awesome-icon icon="grip" />
+        </li>
+        <li :class="[{ active: tabType == 'list' }]" @click="tabClick('list')">
+          <font-awesome-icon icon="list" />
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
 <style lang="scss" scoped>
 .title {

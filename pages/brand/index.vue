@@ -13,7 +13,7 @@ await getBrandListApi()
 const breads = reactive([
   {
     name: '品牌旗艦',
-    url: '#',
+    link: '#',
   },
 ])
 </script>

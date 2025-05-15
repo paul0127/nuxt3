@@ -1,12 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { useNewsApi } from '~/composables/api'
+
+import type { NewsListResponse } from '~/types'
 
 const { getNewsList } = useNewsApi()
 
 const route = useRoute()
 
-let dataBase = ref({
-  info:{},
+let dataBase = ref<NewsListResponse>({
+  info: {
+    id:0,
+    cname:'',
+    Keywords:'',
+    Descript:''
+  },
   list: [],
   total: 0,
   page: 1,
@@ -34,10 +41,10 @@ const breads = reactive([
 useHead({
   title: dataBase.value.info.cname,
   meta: [
-    { name: 'description', content: dataBase.value.info.descript },
+    { name: 'description', content: dataBase.value.info.Descript },
     {
       name: 'keywords',
-      content: dataBase.value.info.keywords,
+      content: dataBase.value.info.Keywords,
     },
   ],
 })

@@ -1,12 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { defineProps } from 'vue'
+import type { IndexBlock } from '~/types'
 
-const props = defineProps({
-  layoutData: {
-    type: Object,
-    default: () => ({}),
-  },
-})
+const props = defineProps<{
+  layoutData: IndexBlock<'adv'>
+}>()
 </script>
 
 <template>
@@ -22,14 +20,14 @@ const props = defineProps({
       <div
         class="column one"
         :class="[
-          { one: layoutData.qt.length == 1 },
-          { two: layoutData.qt.length == 2 },
+          { one: layoutData.block.length == 1 },
+          { two: layoutData.block.length == 2 },
         ]"
-        v-if="layoutData.qt.length == 1 || layoutData.qt.length == 2"
+        v-if="layoutData.block.length == 1 || layoutData.block.length == 2"
       >
         <NuxtLink
           :to="item.url"
-          v-for="(item, index) in layoutData.qt"
+          v-for="(item, index) in layoutData.block"
           :key="index"
         >
           <div
@@ -39,114 +37,114 @@ const props = defineProps({
         </NuxtLink>
       </div>
 
-      <div class="column three" v-if="layoutData.qt.length == 3">
-        <NuxtLink :to="layoutData.qt[0].url">
+      <div class="column three" v-if="layoutData.block.length == 3">
+        <NuxtLink :to="layoutData.block[0].url">
           <div
             class="img"
             :style="{
-              backgroundImage: `url(${urlBase}${layoutData.qt[0].pic})`,
+              backgroundImage: `url(${urlBase}${layoutData.block[0].pic})`,
             }"
           ></div
         ></NuxtLink>
         <span>
-          <NuxtLink :to="layoutData.qt[1].url">
+          <NuxtLink :to="layoutData.block[1].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[1].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[1].pic})`,
               }"
             ></div
           ></NuxtLink>
-          <NuxtLink :to="layoutData.qt[2].url">
+          <NuxtLink :to="layoutData.block[2].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[2].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[2].pic})`,
               }"
             ></div
           ></NuxtLink>
         </span>
       </div>
 
-      <div class="column four" v-if="layoutData.qt.length == 4">
+      <div class="column four" v-if="layoutData.block.length == 4">
         <span>
-          <NuxtLink :to="layoutData.qt[0].url">
+          <NuxtLink :to="layoutData.block[0].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[0].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[0].pic})`,
               }"
             ></div
           ></NuxtLink>
-          <NuxtLink :to="layoutData.qt[1].url">
+          <NuxtLink :to="layoutData.block[1].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[1].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[1].pic})`,
               }"
             ></div
           ></NuxtLink>
         </span>
         <span>
-          <NuxtLink :to="layoutData.qt[2].url">
+          <NuxtLink :to="layoutData.block[2].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[2].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[2].pic})`,
               }"
             ></div
           ></NuxtLink>
-          <NuxtLink :to="layoutData.qt[3].url">
+          <NuxtLink :to="layoutData.block[3].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[3].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[3].pic})`,
               }"
             ></div></NuxtLink
         ></span>
       </div>
 
-      <div class="column five" v-if="layoutData.qt.length == 5">
+      <div class="column five" v-if="layoutData.block.length == 5">
         <span>
-          <NuxtLink :to="layoutData.qt[0].url">
+          <NuxtLink :to="layoutData.block[0].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[0].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[0].pic})`,
               }"
             ></div
           ></NuxtLink>
-          <NuxtLink :to="layoutData.qt[1].url">
+          <NuxtLink :to="layoutData.block[1].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[1].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[1].pic})`,
               }"
             ></div
           ></NuxtLink>
         </span>
-        <NuxtLink :to="layoutData.qt[2].url">
+        <NuxtLink :to="layoutData.block[2].url">
           <div
             class="img"
             :style="{
-              backgroundImage: `url(${urlBase}${layoutData.qt[2].pic})`,
+              backgroundImage: `url(${urlBase}${layoutData.block[2].pic})`,
             }"
           ></div
         ></NuxtLink>
         <span
-          ><NuxtLink :to="layoutData.qt[3].url">
+          ><NuxtLink :to="layoutData.block[3].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[3].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[3].pic})`,
               }"
             ></div
           ></NuxtLink>
-          <NuxtLink :to="layoutData.qt[4].url">
+          <NuxtLink :to="layoutData.block[4].url">
             <div
               class="img"
               :style="{
-                backgroundImage: `url(${urlBase}${layoutData.qt[4].pic})`,
+                backgroundImage: `url(${urlBase}${layoutData.block[4].pic})`,
               }"
             ></div></NuxtLink
         ></span>

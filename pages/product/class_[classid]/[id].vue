@@ -1,16 +1,34 @@
-<script setup>
-import { ElNotification  } from 'element-plus'
+<script setup lang="ts">
+import { ElNotification } from 'element-plus'
 
-import swiper from '~/components/kits/swiper.vue'
 import { useProductApi } from '~/composables/api'
+
+import type { ProductDetailInfo } from '~/types'
 
 const { getProduct, toLove } = useProductApi()
 
 const route = useRoute()
-const dataBase = ref({
-  info:{}
+const dataBase = ref<ProductDetailInfo>({
+  info: {
+    p_id: 0,
+    p_title: '',
+    keywords:'',
+    descript: '',
+    p_content: '',
+    feature: '',
+    loved: false,
+    author: 0,
+    creator: '',
+    class: {
+      cname: '',
+      id: 0,
+    },
+    res: [],
+  },
+  p_list: [],
+  specification: [],
 })
-const select_item = ref(0)
+const select_item = ref<number>(0)
 
 const getProductApi = async () => {
   const [result, data] = await getProduct({
@@ -42,7 +60,7 @@ const selectItemPrice = computed(() => {
 
 const qty = ref(1)
 
-const addMinusQty = (q) => {
+const addMinusQty = (q: 'minus' | 'plus') => {
   if (q === 'minus') {
     qty.value = qty.value > 1 ? qty.value - 1 : 1
   } else if (q === 'plus') {
@@ -59,7 +77,7 @@ const toLoveApi = async () => {
       type: 'success',
     })
     await getProductApi()
-  }else{
+  } else {
     ElNotification({
       title: 'Error',
       message: info,
@@ -76,7 +94,7 @@ const addCart = async () => {
     s_id: select_item.value,
     qty: qty.value,
   }
-  store.addToCart('add',product)
+  store.addToCart('add', product)
 
   ElNotification({
     title: '成功加入購物車',
@@ -88,11 +106,11 @@ const addCart = async () => {
 const breads = reactive([
   {
     name: dataBase.value.info.class.cname,
-    url: `/product/class_${dataBase.value.info.class.id}`,
+    link: `/product/class_${dataBase.value.info.class.id}`,
   },
   {
     name: dataBase.value.info.p_title,
-    url: '#',
+    link: '#',
   },
 ])
 
@@ -116,7 +134,7 @@ useHead({
         <div class="info_top">
           <div class="img">
             <div class="product_slider">
-              <swiper :list="dataBase.info.res" />
+              <kitsSwiper :list="dataBase.info.res" />
             </div>
             <div class="img_list">
               <div

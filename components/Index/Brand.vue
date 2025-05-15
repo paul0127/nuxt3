@@ -1,10 +1,9 @@
-<script setup>
-const props = defineProps({
-  layoutData: {
-    type: Object,
-    default: () => ({}),
-  },
-})
+<script setup lang="ts">
+import type { IndexBlock } from '~/types'
+
+const props = defineProps<{
+  layoutData: IndexBlock<'brands'>
+}>()
 </script>
 <template>
   <div class="index_brand">
@@ -15,7 +14,7 @@ const props = defineProps({
       </div>
     </div>
     <div class="list">
-      <div class="item" v-for="item in layoutData.list" :key="item.id">
+      <div class="item" v-for="item in layoutData.block" :key="item.id">
         <NuxtLink class="image" :to="`/brand/${item.id}`">
           <img :src="`${urlBase}${item.pic}`" alt="" />
         </NuxtLink>

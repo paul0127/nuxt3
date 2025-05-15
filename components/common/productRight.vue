@@ -1,18 +1,11 @@
-<script setup>
-const props = defineProps({
-  productList: {
-    type: Array,
-    default: () => [],
-  },
-  tabType: {
-    type: String,
-    default: 'list',
-  },
-  classId: {
-    type: String,
-    default: '0',
-  },
-})
+<script setup lang="ts">
+import type { ProductItem } from '~/types/product'
+
+const props = defineProps<{
+  productList: ProductItem[],
+  tabType: 'grid' | 'list',
+  classId: string,
+}>()
 </script>
 
 <template>

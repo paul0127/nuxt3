@@ -1,23 +1,38 @@
-<script setup>
+<script setup lang="ts">
 import { useNewsApi } from '~/composables/api'
+
+import type { NewsDetailInfo } from '~/types'
 
 const { getNews } = useNewsApi()
 
 const route = useRoute()
-const dataBase = ref()
+const dataBase = ref<NewsDetailInfo>({
+  n_id: 0,
+  descript: '',
+  keywords: '',
+  classname: '',
+  n_content: '',
+  pc_code: 0,
+  n_title: '',
+  n_pubdate: '',
+})
+
 const [result, data] = await getNews({
   nid: route.params.id,
 })
-data['n_content'] = data['n_content'].replace('/ckfinder/', `${urlBase}/ckfinder/`)
+data['n_content'] = data['n_content'].replace(
+  '/ckfinder/',
+  `${urlBase}/ckfinder/`
+)
 dataBase.value = data
 const breads = reactive([
   {
     name: dataBase.value.classname,
-    url: `/News/class_${dataBase.value.pc_code}`,
+    link: `/News/class_${dataBase.value.pc_code}`,
   },
   {
     name: dataBase.value.n_title,
-    url: '#',
+    link: '#',
   },
 ])
 </script>

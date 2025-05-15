@@ -1,43 +1,61 @@
-<script setup>
+<script setup lang="ts">
 import { useBaseApi } from '~/composables/api'
+import type { IndexLayout, IndexTypeMap } from '~/types'
 
 const { indexLayout } = useBaseApi()
 
-const dataBase = ref()
+const dataBase = ref<IndexLayout>({
+  banner_list: [],
+  out: [],
+})
 
-const [result,data] = await indexLayout()
+const [result, data] = await indexLayout()
 
 dataBase.value = data
 
-const changeLayoutName = (layout) => {
+const componentMap: Record<keyof IndexTypeMap, string> = {
+  news: 'IndexNews',
+  adv: 'IndexAdv',
+  products: 'IndexProduct',
+  content: 'IndexFree',
+  brands: 'IndexBrand',
+}
+
+const changeLayoutName = (layout: keyof IndexTypeMap) => {
   switch (layout) {
-    case 'n':
+    case 'news':
       return resolveComponent('IndexNews')
-    case 'a':
+    case 'adv':
       return resolveComponent('IndexAdv')
-    case 'p':
+    case 'products':
       return resolveComponent('IndexProduct')
-    case 'g':
+    case 'content':
       return resolveComponent('IndexFree')
-    case 'y':
+    case 'brands':
       return resolveComponent('IndexBrand')
     default:
       return ''
   }
 }
-const out = reactive(dataBase.value.out.map((item) => {
-  return {
-    ...item,
-    layout: changeLayoutName(item.lx)
-  }
-}))
-
+const out = reactive(
+  dataBase.value.out.map((item) => {
+    return {
+      ...item,
+      layout: changeLayoutName(item.lx),
+    }
+  })
+)
 </script>
 <template>
   <div>
-    <IndexBanner :banner_list = "dataBase.banner_list" />
+    <IndexBanner :banner_list="dataBase.banner_list" />
     <div class="container custom">
-      <component v-for="(item,index) in out" :key="index" :is="item.layout" :layoutData="item"></component>
+      <component
+        v-for="(item, index) in out"
+        :key="index"
+        :is="item.layout"
+        :layoutData="item"
+      ></component>
     </div>
   </div>
 </template>

@@ -1,12 +1,11 @@
-<script setup>
-const props = defineProps({
-  layoutData: {
-    type: Object,
-    default: () => ({}),
-  },
-})
+<script setup lang="ts">
+import type { IndexBlock } from '~/types'
+
+const props = defineProps<{
+  layoutData: IndexBlock<'content'>
+}>()
 const content = ref()
-content.value= props.layoutData.qt.replaceAll(
+content.value= props.layoutData.block.replaceAll(
   'ckfinder/',
   `${urlBase}ckfinder/`
 )

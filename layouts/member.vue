@@ -2,7 +2,7 @@
 const breads = reactive([
     {
         name: '會員專區',
-        url: '/member',
+        link: '/member',
     }
 ]);
 </script>
