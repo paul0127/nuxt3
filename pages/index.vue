@@ -13,49 +13,24 @@ const [result, data] = await indexLayout()
 
 dataBase.value = data
 
-const componentMap: Record<keyof IndexTypeMap, string> = {
-  news: 'IndexNews',
-  adv: 'IndexAdv',
-  products: 'IndexProduct',
-  content: 'IndexFree',
-  brands: 'IndexBrand',
+const componentMap: Record<keyof IndexTypeMap, any> = {
+  news: resolveComponent('IndexNews'),
+  adv: resolveComponent('IndexAdv'),
+  products: resolveComponent('IndexProduct'),
+  content: resolveComponent('IndexContent'),
+  brands: resolveComponent('IndexBrand'),
 }
-
-const changeLayoutName = (layout: keyof IndexTypeMap) => {
-  switch (layout) {
-    case 'news':
-      return resolveComponent('IndexNews')
-    case 'adv':
-      return resolveComponent('IndexAdv')
-    case 'products':
-      return resolveComponent('IndexProduct')
-    case 'content':
-      return resolveComponent('IndexFree')
-    case 'brands':
-      return resolveComponent('IndexBrand')
-    default:
-      return ''
-  }
-}
-const out = reactive(
-  dataBase.value.out.map((item) => {
-    return {
-      ...item,
-      layout: changeLayoutName(item.lx),
-    }
-  })
-)
 </script>
 <template>
   <div>
     <IndexBanner :banner_list="dataBase.banner_list" />
     <div class="container custom">
       <component
-        v-for="(item, index) in out"
+        v-for="(item, index) in dataBase.out"
         :key="index"
-        :is="item.layout"
+        :is="componentMap[item.lx]"
         :layoutData="item"
-      ></component>
+      />
     </div>
   </div>
 </template>

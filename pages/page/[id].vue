@@ -1,11 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import { usePageApi } from '~/composables/api'
+import type { page } from '~/types'
 
 const { pageData } = usePageApi()
 
 const route = useRoute()
 
-const dataBase = ref()
+const dataBase = ref<page>({
+  id: 0,
+  stitle: '',
+  keywords: '',
+  descript: '',
+  content: '',
+})
 
 const [result, data] = await pageData({
   id: route.params.id,
@@ -37,7 +44,7 @@ useHead({
     <commonTitle :breads="breads" />
     <div class="page onepage">
       <div class="info">
-        <div class="name">{{dataBase.stitle}}</div>
+        <div class="name">{{ dataBase.stitle }}</div>
         <div class="desc" v-html="dataBase.content" />
       </div>
     </div>

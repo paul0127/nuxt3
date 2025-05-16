@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { calcTime } from '~/utils/day.js'
 import type { IndexBlock } from '~/types'
-
+defineOptions({ name: 'IndexNews' })
 const props = defineProps<{
   layoutData: IndexBlock<'news'>
 }>()

@@ -1,12 +1,12 @@
-<script setup>
-import Title from '~/components/common/Title.vue'
+<script setup lang="ts">
+import type { LoginFormData } from '~/types'
 
 useHead({
   title: '會員登入',
   meta: [{ name: 'description', content: '會員登入' }],
 })
 
-const input = ref({
+const input = ref<LoginFormData>({
   email: '',
   password: '',
 })
@@ -36,7 +36,6 @@ const login = async () => {
     })
   }
 }
-
 </script>
 <template>
   <div>

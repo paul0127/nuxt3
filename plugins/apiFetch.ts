@@ -1,20 +1,25 @@
-// plugins/apiFetch.ts
 export default defineNuxtPlugin(() => {
-  const token = useCookie('token')
+  const token = useCookie<string>('token')
   const store = authStore()
   const urlBase = 'https://php.e-office.tw/'
 
+  type ApiResponse<T = unknown> = {
+    data: T
+    status: boolean
+    info?: string
+    code?: number
+  }
+
   const refreshToken = async () => {
-    const { data } = await useFetch(
-      'index.php?g=Api&m=Login&a=checkTokenExpired',
-      {
-        method: 'POST',
-        baseURL: urlBase,
-        headers: {
-          Authorization: token.value,
-        },
-      }
-    )
+    const { data } = await useFetch<{
+      data?: { token: string }
+    }>('index.php?g=Api&m=Login&a=checkTokenExpired', {
+      method: 'POST',
+      baseURL: urlBase,
+      headers: {
+        Authorization: token.value,
+      },
+    })
 
     if (data.value?.data?.token) {
       token.value = data.value.data.token
@@ -25,10 +30,14 @@ export default defineNuxtPlugin(() => {
     return false
   }
 
-  const apiFetch = async (method:string ,url: string, params = {},options: any = {}): Promise<{ data: any; result: boolean, info?: string, refresh:void }> => {
-    
+  const apiFetch = async (
+    method: string,
+    url: string,
+    params = {},
+    options: any = {}
+  ): Promise<{ data: any; result: boolean; info?: string; refresh: void }> => {
     let mergedOptions = {}
-    if(method=='GET'){
+    if (method == 'GET') {
       mergedOptions = {
         method,
         baseURL: urlBase,
@@ -39,11 +48,11 @@ export default defineNuxtPlugin(() => {
         },
         ...options,
       }
-    }else{
+    } else {
       mergedOptions = {
         method,
         baseURL: urlBase,
-        body:params,
+        body: params,
         headers: {
           Authorization: token.value,
           ...(options.headers || {}),
@@ -51,7 +60,7 @@ export default defineNuxtPlugin(() => {
         ...options,
       }
     }
-    
+
     const { data, status, refresh } = await useFetch(url, mergedOptions)
 
     if (data.value?.data?.code === 401) {
@@ -62,19 +71,24 @@ export default defineNuxtPlugin(() => {
     }
 
     if (status.value === 'success') {
-      return {result:!data.value.status, data:data.value.data, info:data.value.info, refresh}
+      return {
+        result: !data.value.status,
+        data: data.value.data,
+        info: data.value.info,
+        refresh,
+      }
     } else {
-      return {result:false, data:null}
+      return { result: false, data: null }
     }
   }
 
-  const get = async (url: string, params = {},options: any = {}) => {
+  const get = async (url: string, params = {}, options: any = {}) => {
     const res = await apiFetch('GET', url, params, options)
 
     return res
   }
 
-  const post = async (url:string, params = {}, options: any = {}) => {
+  const post = async (url: string, params = {}, options: any = {}) => {
     const res = await apiFetch('POST', url, params, options)
 
     return res
@@ -83,7 +97,7 @@ export default defineNuxtPlugin(() => {
   return {
     provide: {
       get,
-      post
+      post,
     },
   }
 })

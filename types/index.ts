@@ -1,3 +1,6 @@
 export * from './base'
+export * from './page'
 export * from './product'
 export * from './news'
+export * from './brand'
+export * from './member'

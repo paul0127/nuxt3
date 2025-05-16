@@ -1,5 +1,4 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
@@ -11,6 +10,8 @@
     "target": "ES2020",          // ✅ 至少 ES2017 或以上（建議 ES2020）
     "module": "ESNext",          // ✅ 或 'es2022'、'system'、'node16'、'nodenext'
     "lib": ["ESNext", "DOM"],    // ✅ 若你有用瀏覽器 API，建議加 DOM
-    "types": ["@types/node"]
+    "types": ["@types/node"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

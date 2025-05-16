@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { useBrandApi } from '~/composables/api'
+import type { BrandList } from '~/types'
 
 const { getBrandList } = useBrandApi()
 
-const dataBase = ref()
+const dataBase = ref<BrandList[]>([])
 const getBrandListApi = async () => {
   const [result, data] = await getBrandList()
   dataBase.value = data

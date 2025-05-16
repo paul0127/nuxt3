@@ -1,5 +1,8 @@
-<script setup>
-const dataBase = ref({
+<script setup lang="ts">
+import type { FormRules, FormItemRule } from 'element-plus'
+import type { RegisterFormData } from '~/types'
+
+const dataBase = ref<RegisterFormData>({
   account: '',
   name: '',
   birthday: '',
@@ -12,10 +15,10 @@ const dataBase = ref({
 const store = authStore()
 const router = useRouter()
 
-const formEl = useTemplateRef('formEl')
+const formEl = useTemplateRef<HTMLFormElement>('formEl')
 const { validatePhone } = useCheckoutValidation()
 
-const validateCheckPhone = (rule, value, callback) => {
+const validateCheckPhone: NonNullable<FormItemRule['validator']> = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('請輸入電話'))
   } else {
@@ -27,7 +30,7 @@ const validateCheckPhone = (rule, value, callback) => {
   }
 }
 
-const validatePass = (rule, value, callback) => {
+const validatePass: NonNullable<FormItemRule['validator']> = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('請輸入密碼'))
   } else {
@@ -40,7 +43,7 @@ const validatePass = (rule, value, callback) => {
   }
 }
 
-const validateRePass = (rule, value, callback) => {
+const validateRePass: NonNullable<FormItemRule['validator']> = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('請再輸入一次密碼'))
   } else {
@@ -52,7 +55,7 @@ const validateRePass = (rule, value, callback) => {
   }
 }
 
-const rules = reactive({
+const rules: FormRules = reactive({
   account: [{ required: true, message: '請輸入帳號', trigger: 'blur' }],
   birthday: [{ required: true, message: '請輸入生日', trigger: 'blur' }],
   name: [{ required: true, message: '請輸入姓名', trigger: 'blur' }],
@@ -63,6 +66,7 @@ const rules = reactive({
 })
 
 const register = async () => {
+  if (!formEl.value) return
   await formEl.value.validate()
 
   const { account, password, name, birthday, phone, sex } = dataBase.value
@@ -91,6 +95,7 @@ const register = async () => {
 }
 
 const resetForm = () => {
+  if (!formEl.value) return
   formEl.value.resetFields()
 }
 </script>

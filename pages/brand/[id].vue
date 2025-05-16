@@ -1,19 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import { useBrandApi } from '~/composables/api'
-
+import type { BrandInfoResponse } from '~/types'
 
 const { getBrandProductList } = useBrandApi()
 
 const route = useRoute()
 
-const dataBase = ref({
+const dataBase = ref<BrandInfoResponse>({
   list: [],
   info: {
+    id: 0,
     name: '',
     pic: '',
     descript: '',
   },
+  class_list: [],
+  limit: 0,
+  page: 0,
+  total: 0,
 })
+
 const getBrandProductListApi = async () => {
   const [result, data] = await getBrandProductList({
     id: route.params.id,
@@ -24,9 +30,11 @@ const getBrandProductListApi = async () => {
 }
 await getBrandProductListApi()
 
-const tabType = ref('grid')
+const tabType = ref<'grid' | 'list'>('grid')
 
-const classId = ref(route.params.id)
+const classId = ref<string>(
+  Array.isArray(route.params.id) ? route.params.id[0] : route.params.id || ''
+)
 
 const breads = reactive([
   {

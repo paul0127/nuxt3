@@ -1,32 +1,29 @@
-<script setup>
-const props = defineProps({
-  total: {
-    type: Number,
-    default: 0,
-  },
-  page: {
-    type: Number,
-    default: 1,
-  },
-  limit: {
-    type: Number,
-    default: 1,
-  },
-})
+<script setup lang="ts">
+const props = defineProps<{
+  total: number
+  page: number
+  limit: number
+}>()
 
 const route = useRoute()
 const router = useRouter()
 const emit = defineEmits(['pageChange'])
 
-const nowPage = computed(() => {
-  return route.query.page ? parseInt(route.query.page) : 1
+const nowPage: Ref<number> = computed(() => {
+  const pageParam = Array.isArray(route.params.page)
+    ? route.params.page[0]
+    : route.params.page
+
+  const pageNum = Number(pageParam)
+
+  return Number.isInteger(pageNum) && pageNum > 0 ? pageNum : 1
 })
 
-const pageCount = computed(() => {
+const pageCount = computed<number>(() => {
   return Math.ceil(props.total / props.limit)
 })
 
-const pageChange = async (p) => {
+const pageChange = async (p: number) => {
   await router.push({ query: { ...route.query, page: p }, force: true })
   emit('pageChange')
 }
@@ -43,7 +40,7 @@ const prePage = async () => {
   pageChange(p)
 }
 
-const goToPage = async (p) => {
+const goToPage = async (p: number) => {
   if (p < 1 || p > pageCount.value) return
   pageChange(p)
 }

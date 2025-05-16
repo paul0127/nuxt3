@@ -16,7 +16,6 @@ export interface IndexBrandList {
   id: number
   name: string
   pic: string
-  url: string
 }
 
 export interface IndexProductList {

@@ -1,10 +1,13 @@
-<script setup>
+<script setup lang="ts">
+import type { FormRules, FormItemRule } from 'element-plus'
 import { useMemberApi } from '~/composables/api'
+
+import type { MemberFormData } from '~/types'
 
 const { getMemberInfo, saveMemberInfo } = useMemberApi()
 
-const formEl = useTemplateRef('formEl')
-const dataBase = ref({
+const formEl = useTemplateRef<HTMLFormElement>('formEl')
+const dataBase = ref<MemberFormData>({
   account: '',
   birthday: '',
   name: '',
@@ -14,19 +17,23 @@ const dataBase = ref({
 
 const { validatePhone } = useCheckoutValidation()
 
-const validateCheckPhone = (rule, value, callback) => {
+const validateCheckPhone: NonNullable<FormItemRule['validator']> = (
+  rule,
+  value,
+  callback
+) => {
   if (value === '') {
     callback(new Error('請輸入電話'))
   } else {
     if (validatePhone(value)) {
       callback()
-    }else{
+    } else {
       callback(new Error('電話格式不正確'))
     }
   }
 }
 
-const rules = reactive({
+const rules: FormRules = reactive({
   account: [{ required: true, message: '請輸入帳號', trigger: 'blur' }],
   birthday: [{ required: true, message: '請輸入生日', trigger: 'blur' }],
   name: [{ required: true, message: '請輸入姓名', trigger: 'blur' }],
@@ -43,6 +50,7 @@ const getMemberInfoApi = async () => {
 await getMemberInfoApi()
 
 const saveMemberInfoApi = async () => {
+  if (!formEl.value) return
   await formEl.value.validate()
   const [result, data, info] = await saveMemberInfo(dataBase.value)
   if (result) {

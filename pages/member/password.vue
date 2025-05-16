@@ -1,16 +1,24 @@
-<script setup>
+<script setup lang="ts">
+import type { FormRules, FormItemRule } from 'element-plus'
+
 import { useMemberApi } from '~/composables/api'
+
+import type { RePasswordData } from '~/types'
 
 const { saveMemberPassword } = useMemberApi()
 
-const formEl = useTemplateRef('formEl')
-const dataBase = ref({
+const formEl = useTemplateRef<HTMLFormElement>('formEl')
+const dataBase = ref<RePasswordData>({
   old_password: '',
   new_password: '',
   re_password: '',
 })
 
-const validatePass = (rule, value, callback) => {
+const validatePass: NonNullable<FormItemRule['validator']> = (
+  rule,
+  value,
+  callback
+) => {
   if (value === '') {
     callback(new Error('請輸入新的密碼'))
   } else {
@@ -23,7 +31,11 @@ const validatePass = (rule, value, callback) => {
   }
 }
 
-const validateRePass = (rule, value, callback) => {
+const validateRePass: NonNullable<FormItemRule['validator']> = (
+  rule,
+  value,
+  callback
+) => {
   if (value === '') {
     callback(new Error('請再輸入一次新的密碼'))
   } else {
@@ -35,13 +47,14 @@ const validateRePass = (rule, value, callback) => {
   }
 }
 
-const rules = reactive({
+const rules: FormRules = reactive({
   old_password: [{ required: true, message: '請輸入舊密碼', trigger: 'blur' }],
   new_password: [{ validator: validatePass, trigger: 'blur' }],
   re_password: [{ validator: validateRePass, trigger: 'blur' }],
 })
 
 const savePassword = async () => {
+  if (!formEl.value) return
   await formEl.value.validate()
   const [result, data, info] = await saveMemberPassword({
     old_password: dataBase.value.old_password,

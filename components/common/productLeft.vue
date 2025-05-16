@@ -1,21 +1,29 @@
-<script setup>
-const props = defineProps({
-  menuList: {
-    type: Array,
-    default: () => [],
-  },
-})
+<script setup lang="ts">
+import type { classList } from '~/types'
+
+const props = defineProps<{
+  menuList: classList[]
+}>()
 
 const emit = defineEmits(['linkClick'])
 const route = useRoute()
 const router = useRouter()
 
-const linkClick = async (item) => {
+const fliter: Ref<number | null> = computed(() => {
+  const fliterParam = Array.isArray(route.params.fliter)
+    ? route.params.fliter[0]
+    : route.params.fliter
+
+  const fliterNum = Number(fliterParam)
+
+  return Number.isInteger(fliterNum) ? fliterNum : null
+})
+
+const linkClick = async (item: classList): Promise<void> => {
   const query = { fliter: item.id }
   await router.push({ path: `/brand/${route.params.id}`, query })
   emit('linkClick')
 }
-
 </script>
 <template>
   <div class="left_menu">
@@ -24,9 +32,12 @@ const linkClick = async (item) => {
       <li
         v-for="(item, index) in menuList"
         :key="index"
-        :class="{ active: item.id == route.query.fliter }"
+        :class="{ active: item.id == fliter }"
       >
-        <a @click="linkClick(item)" :alt="`/brand/${route.params.id}?fliter=${item.id}`">{{ item.cname }}</a>
+        <a
+          @click="linkClick(item)"
+          >{{ item.cname }}</a
+        >
       </li>
     </ul>
   </div>
