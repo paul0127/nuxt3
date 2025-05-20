@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useBaseApi } from '~/composables/api'
 
 const { getHeaderData } = useBaseApi()
@@ -21,63 +21,46 @@ const cartList = computed(() => {
   return cart.getCartDetail
 })
 
-const menuToggle = () => {
-  const menu = document.querySelector('header ul.nav')
-  const menuBtn = document.querySelector('.menu_btn')
-  if (!menu || !menuBtn) return
-  const activeClass = 'active'
-  if (menu.classList.contains(activeClass)) {
-    menu.classList.remove(activeClass)
-    menuBtn.classList.remove(activeClass)
-  } else {
-    menu.classList.add(activeClass)
-    menuBtn.classList.add(activeClass)
-  }
+const common = commonStore()
+const activeBtn = computed(() => {
+  return common.activeBtn
+})
+
+const activeBtnToggle = (btn: string) => {
+  common.btnToggle(btn)
 }
 
-const menuItemToggle = (event) => {
-  if (window.innerWidth >= 1200) return
+const windowWidth = ref(0)
+const handleResize = () => {
+  windowWidth.value = window.innerWidth
+}
 
-  const menu = event.currentTarget.nextElementSibling
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+const menuItemToggle = (event: MouseEvent) => {
+  if (windowWidth.value >= 1200) return
+
+  const menu = event.currentTarget as HTMLElement
+  const nextMenu = menu.nextElementSibling as HTMLElement | null
   const activeClass = 'active'
   const allMenus = document.querySelectorAll('header ul.nav > li > ul.sub_menu')
-  if (!menu) return
   allMenus.forEach((item) => item.classList.remove(activeClass))
-  menu.classList.toggle(activeClass)
+  nextMenu?.classList.toggle(activeClass)
 }
 
-const router = useRouter()
 const route = useRoute()
-const memberBtnToggle = ref(false)
-const cartBtnToggle = ref(false)
-const searchBtnToggle = ref(false)
-
-const allClose = () => {
-  memberBtnToggle.value = false
-  cartBtnToggle.value = false
-  searchBtnToggle.value = false
-}
-
-const btnMap = {
-  member: memberBtnToggle,
-  cart: cartBtnToggle,
-  search: searchBtnToggle,
-}
-
-const btnToggle = (btn) => {
-  let menu = false
-  const current = btnMap[btn]
-  menu = current.value
-
-  allClose()
-  current.value = !menu
-}
-
 watch(
   () => route.path,
   (newVal) => {
-    allClose()
-  },{
+    common.clearBtnToggle()
+  },
+  {
     immediate: true,
   }
 )
@@ -85,7 +68,11 @@ watch(
 <template>
   <header>
     <div class="nav_top">
-      <div class="menu_btn" @click="menuToggle()">
+      <div
+        class="menu_btn"
+        :class="{ active: activeBtn == 'menu' }"
+        @click="activeBtnToggle('menu')"
+      >
         <font-awesome-icon icon="bars" />
       </div>
       <div class="logo">
@@ -101,67 +88,61 @@ watch(
             </NuxtLink>
           </template>
           <template v-else>
-            <a @click="btnToggle('member')"
+            <a @click="activeBtnToggle('member')"
               ><font-awesome-icon icon="user"
             /></a>
-            <div class="dropDown" :class="{ active: memberBtnToggle }">
+            <div class="dropDown" :class="{ active: activeBtn == 'member' }">
               <div class="login_info">
                 <NuxtLink to="/login">會員登入</NuxtLink>
-                <NuxtLink to="/register"
-                  >註冊新會員</NuxtLink
-                >
+                <NuxtLink to="/register">註冊新會員</NuxtLink>
               </div>
             </div>
           </template>
         </li>
         <li class="cart_bar">
-          <a @click="btnToggle('cart')"
+          <a @click="activeBtnToggle('cart')"
             ><font-awesome-icon icon="cart-shopping" /><span class="num">{{
               cartList.length
             }}</span></a
           >
-          <div class="dropDown" :class="{ active: cartBtnToggle }">
+          <div class="dropDown" :class="{ active: activeBtn == 'cart' }">
             <div class="cart_info">
               <template v-if="cartList.length">
-              <div class="list">
-                <div
-                  class="item"
-                  v-for="(item, index) in cartList"
-                  :key="index"
-                >
-                  <div class="image">
-                    <img :src="`${urlBase}${item.pic}`" alt="" />
-                  </div>
-                  <div class="text">
-                    <div class="name">
-                      {{ item.p_title
-                      }}{{
-                        item.specification ? `-${item.specification}` : null
-                      }}
+                <div class="list">
+                  <div
+                    class="item"
+                    v-for="(item, index) in cartList"
+                    :key="index"
+                  >
+                    <div class="image">
+                      <img :src="`${urlBase}${item.pic}`" alt="" />
                     </div>
-                    <div class="qty">
-                      <label for="">數量:</label>{{ item.qty }}
+                    <div class="text">
+                      <div class="name">
+                        {{ item.p_title
+                        }}{{
+                          item.specification ? `-${item.specification}` : null
+                        }}
+                      </div>
+                      <div class="qty">
+                        <label for="">數量:</label>{{ item.qty }}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <NuxtLink to="/cart" class="to_cart"
-                >立即結帳</NuxtLink
-              >
-            </template>
-            <template v-else>
-              <div class="empty">
-                購物車暫無商品
-              </div>
-            </template>
+                <NuxtLink to="/cart" class="to_cart">立即結帳</NuxtLink>
+              </template>
+              <template v-else>
+                <div class="empty">購物車暫無商品</div>
+              </template>
             </div>
           </div>
         </li>
         <li class="search_bar">
-          <a @click="btnToggle('search')"
+          <a @click="activeBtnToggle('search')"
             ><font-awesome-icon icon="magnifying-glass"
           /></a>
-          <div class="dropDown" :class="{ active: searchBtnToggle }">
+          <div class="dropDown" :class="{ active: activeBtn == 'search' }">
             <form action="">
               <input type="text" placeholder="請輸入產品名" />
               <button>搜尋</button>
@@ -171,12 +152,19 @@ watch(
       </ul>
     </div>
 
-    <ul class="nav">
-      <li class="sub" v-for="(item, index) in dataBase" :key="index">
+    <ul class="nav" :class="{ active: activeBtn == 'menu' }">
+      <li
+        :class="{ sub: item.sub.length > 1 }"
+        v-for="(item, index) in dataBase"
+        :key="index"
+      >
         <NuxtLink
+          :class="{ sub: item.sub.length > 1 }"
           v-if="item.sub && item.sub.length > 0"
-          :to="item.sub[0].lurl"
-          @click="menuItemToggle($event)"
+          :to="
+            windowWidth >= 1200 || item.sub.length <= 1 ? item.sub[0].lurl : ''
+          "
+          @click="menuItemToggle"
           >{{ item.lname }}</NuxtLink
         >
         <ul class="sub_menu" v-if="item.sub.length > 1">
@@ -204,6 +192,7 @@ header {
 
     .logo {
       width: 150px;
+      height: 150px;
 
       a {
         display: block;
@@ -262,7 +251,7 @@ header {
 
         .dropDown {
           position: absolute;
-          top: calc(100% + 10px);
+          top: calc(100% + 12px);
           right: 0;
           width: 300px;
           border: 1px solid #bbb;
@@ -303,7 +292,7 @@ header {
           .cart_info {
             display: block;
 
-            .empty{
+            .empty {
               font-size: 1rem;
             }
 
@@ -443,6 +432,7 @@ header {
       a {
         color: #fff;
         text-decoration: none;
+        cursor: pointer;
 
         &:hover {
           opacity: 0.8;
@@ -497,6 +487,7 @@ header {
     .nav_top {
       .logo {
         width: 130px;
+        height: 130px;
       }
 
       ul.toolbar {
@@ -537,6 +528,7 @@ header {
     .nav_top {
       .logo {
         width: 110px;
+        height: 110px;
       }
     }
 
@@ -579,6 +571,7 @@ header {
 
       .logo {
         width: 40px;
+        height: 40px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
