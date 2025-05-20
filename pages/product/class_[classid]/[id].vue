@@ -158,8 +158,8 @@ useHead({
               {{ dataBase.info.descript }}
             </div>
             <div class="price">
-              <div class="discount">NT${{ selectItemPrice.selling_price }}</div>
-              <div class="real">NT${{ selectItemPrice.market_price }}</div>
+              <div class="discount">NT${{ currency(selectItemPrice.selling_price) }}</div>
+              <div class="real">NT${{ currency(selectItemPrice.market_price) }}</div>
             </div>
             <div class="brand">
               <label for="">商品品牌：</label

@@ -194,11 +194,11 @@ const send = () => {
                   {{ item.specification ? item.specification : '-' }}
                 </div>
                 <div class="td price" data-label="單價:">
-                  ${{ item.selling_price }}
+                  ${{ currency(item.selling_price) }}
                 </div>
                 <div class="td qty" data-label="數量:">{{ item.qty }}</div>
                 <div class="td m_total" data-label="小計:">
-                  ${{ item.selling_price * item.qty }}
+                  ${{ currency(item.selling_price * item.qty) }}
                 </div>
               </div>
             </div>
@@ -206,18 +206,18 @@ const send = () => {
           <div class="foot">
             <div class="tr">
               <div class="td">小計</div>
-              <div class="td m_total">${{ total }}</div>
+              <div class="td m_total">${{ currency(total) }}</div>
             </div>
             <div class="tr">
               <div class="td">運費</div>
-              <div class="td m_total">${{ fare }}</div>
+              <div class="td m_total">${{ currency(fare) }}</div>
             </div>
             <div class="tr">
               <div class="td">應付總額</div>
-              <div class="td m_total">${{ total + fare }}</div>
+              <div class="td m_total">${{ currency(total + fare) }}</div>
             </div>
             <div class="alert" v-if="selectLogistics && fare !== 0">
-              (再買{{ selectLogistics.limit_price - total }}元即將享有免運費)
+              (再買{{ currency(selectLogistics.limit_price - total) }}元即將享有免運費)
             </div>
           </div>
         </div>

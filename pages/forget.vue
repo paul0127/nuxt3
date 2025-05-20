@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const input = ref({
   email: '',
 })

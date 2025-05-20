@@ -67,7 +67,7 @@ const router = useRouter()
                       {{ item.specification ? item.specification : '-' }}
                     </div>
                     <div class="td price" data-label="單價:">
-                      ${{ item.selling_price }}
+                      ${{ currency(item.selling_price) }}
                     </div>
                     <div class="td qty">
                       <select
@@ -82,7 +82,7 @@ const router = useRouter()
                       </select>
                     </div>
                     <div class="td m_total" data-label="小計:">
-                      ${{ item.selling_price * item.qty }}
+                      ${{ currency(item.selling_price * item.qty) }}
                     </div>
                     <div class="td operate">
                       <button
@@ -98,7 +98,7 @@ const router = useRouter()
               <div class="foot">
                 <div class="tr">
                   <div class="td">總計：</div>
-                  <div class="td m_total">${{ total }}</div>
+                  <div class="td m_total">${{ currency(total) }}</div>
                   <div class="td operate"></div>
                 </div>
               </div>
