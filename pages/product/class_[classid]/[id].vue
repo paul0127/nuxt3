@@ -12,7 +12,7 @@ const dataBase = ref<ProductDetailInfo>({
   info: {
     p_id: 0,
     p_title: '',
-    keywords:'',
+    keywords: '',
     descript: '',
     p_content: '',
     feature: '',
@@ -158,8 +158,12 @@ useHead({
               {{ dataBase.info.descript }}
             </div>
             <div class="price">
-              <div class="discount">NT${{ currency(selectItemPrice.selling_price) }}</div>
-              <div class="real">NT${{ currency(selectItemPrice.market_price) }}</div>
+              <div class="discount">
+                NT${{ currency(selectItemPrice.selling_price) }}
+              </div>
+              <div class="real">
+                NT${{ currency(selectItemPrice.market_price) }}
+              </div>
             </div>
             <div class="brand">
               <label for="">商品品牌：</label
@@ -580,78 +584,78 @@ useHead({
         }
       }
     }
-  }
 
-  @media (max-width: 1200px) {
-    .info_top {
-      flex-wrap: wrap;
+    @media (max-width: 1200px) {
+      .info_top {
+        flex-wrap: wrap;
 
-      .img {
-        width: 100%;
-        flex: 0 0 100%;
-        margin-right: 0;
-        margin-bottom: 20px;
-        padding: 0;
+        .img {
+          width: 100%;
+          flex: 0 0 100%;
+          margin-right: 0;
+          margin-bottom: 20px;
+          padding: 0;
 
-        .product_slider {
-          margin-bottom: 0;
+          .product_slider {
+            margin-bottom: 0;
 
-          .owl-nav {
+            .owl-nav {
+              display: none;
+            }
+          }
+
+          .img_list {
             display: none;
           }
         }
 
-        .img_list {
-          display: none;
+        .text {
+          .name {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+          }
+
+          .feature {
+            margin-bottom: 10px;
+          }
+
+          .desc {
+            margin-bottom: 20px;
+          }
+
+          .price {
+            margin-bottom: 10px;
+          }
+
+          .qty input[type='number'] {
+            min-height: 0;
+            height: 40px;
+            flex: 1;
+          }
         }
       }
 
-      .text {
-        .name {
-          font-size: 1.5rem;
-          margin-bottom: 10px;
-        }
+      .info_bottom {
+        .recommend_list {
+          .item {
+            flex: 0 0 50%;
 
-        .feature {
-          margin-bottom: 10px;
-        }
-
-        .desc {
-          margin-bottom: 20px;
-        }
-
-        .price {
-          margin-bottom: 10px;
-        }
-
-        .qty input[type='number'] {
-          min-height: 0;
-          height: 40px;
-          flex: 1;
-        }
-      }
-    }
-
-    .info_bottom {
-      .recommend_list {
-        .item {
-          flex: 0 0 50%;
-
-          .text {
-            .name {
-              padding: 0;
-            }
-
-            .price {
-              flex-direction: column;
-
-              .discount {
-                font-size: 1rem;
-                margin-right: 0;
+            .text {
+              .name {
+                padding: 0;
               }
 
-              .real {
-                font-size: 1rem;
+              .price {
+                flex-direction: column;
+
+                .discount {
+                  font-size: 1rem;
+                  margin-right: 0;
+                }
+
+                .real {
+                  font-size: 1rem;
+                }
               }
             }
           }
