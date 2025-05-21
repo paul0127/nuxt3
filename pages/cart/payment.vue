@@ -1,11 +1,12 @@
-<script setup>
+<script setup lang="ts">
+import type { cartList, receiveData, logistics } from '~/types'
 import { useCartApi } from '~/composables/api'
 
 const { getLogistics, getPayment } = useCartApi()
 
-const receive = useCookie('receive')
+const receive = useCookie<receiveData>('receive')
 
-const dataBase = ref({
+const dataBase = ref<receiveData>({
   name: '',
   phone: '',
   county: null,
@@ -29,9 +30,18 @@ const init = () => {
 
   const route = useRoute()
   const { CVSAddress, CVSStoreID, CVSStoreName } = route.query
-  if (CVSAddress) dataBase.value.CVSAddress = CVSAddress
-  if (CVSStoreID) dataBase.value.CVSStoreID = CVSStoreID
-  if (CVSStoreName) dataBase.value.CVSStoreName = CVSStoreName
+  if (CVSAddress)
+    dataBase.value.CVSAddress = Array.isArray(CVSAddress)
+      ? CVSAddress[0]
+      : CVSAddress || null
+  if (CVSStoreID)
+    dataBase.value.CVSStoreID = Array.isArray(CVSStoreID)
+      ? CVSStoreID[0]
+      : CVSStoreID || null
+  if (CVSStoreName)
+    dataBase.value.CVSStoreName = Array.isArray(CVSStoreName)
+      ? CVSStoreName[0]
+      : CVSStoreName || null
 }
 await init()
 
@@ -39,7 +49,7 @@ const logisticsList = ref()
 const getLogisticsApi = async () => {
   const [result, data] = await getLogistics()
   if (result) {
-    logisticsList.value = data
+    logisticsList.value = data as logistics[]
   }
 }
 await getLogisticsApi()
@@ -57,7 +67,7 @@ await getPaymentApi()
 // 取得購物車資料
 const cart = cartStore()
 const cartList = computed(() => {
-  return cart.getCartDetail
+  return cart.getCartDetail as cartList[]
 })
 // 計算購物車總費用
 const total = computed(() => {
@@ -81,7 +91,7 @@ const districts = ref(taiwan_districts)
 const distList = computed(() => {
   if (dataBase.value.county) {
     return districts.value.find((item) => item.name == dataBase.value.county)
-      .districts
+      ?.districts
   } else {
     return []
   }
@@ -96,13 +106,13 @@ const getPostcode = computed(() => {
 
   if (!dist || !dataBase.value.dist) return null
 
-  return dist.find((i) => i.name == dataBase.value.dist).zip
+  return dist.find((i) => i.name == dataBase.value.dist)?.zip
 })
 
 const selectLogistics = computed(() => {
-  if (dataBase.value.logistics == null) return null
+  if (dataBase.value.logistics == null || !logisticsList.value) return null
   return logisticsList.value.find(
-    (item) => item.logistics_id == dataBase.value.logistics
+    (item: logistics) => item.logistics_id == dataBase.value.logistics
   )
 })
 
@@ -118,19 +128,19 @@ const fare = computed(() => {
 // 取得超商地圖
 const url = useRequestURL()
 const get_map = async () => {
-  receive.value = JSON.stringify(dataBase.value)
+  const logisticsTypeMap: Record<number, string> = {
+    0: '0',
+    1: 'UNIMARTC2C',
+    2: 'FAMIC2C',
+  }
 
   const form = document.createElement('form')
   const data = {
     ...dataBase.value,
-    LogisticsSubType:
-      selectLogistics.value.type == 0
-        ? 0
-        : selectLogistics.value.type == 1
-        ? 'UNIMARTC2C'
-        : 'FAMIC2C',
+    LogisticsSubType: logisticsTypeMap[selectLogistics.value.type] || '0',
     url: url.origin,
   }
+  
   form.method = 'POST'
   // form.target = '_blank'
   form.action = `https://php.e-office.tw/index.php?g=Api&m=Api&a=get_map`
@@ -141,7 +151,7 @@ const get_map = async () => {
     const input = document.createElement('input')
     input.type = 'hidden'
     input.name = key
-    input.value = data[key]
+    input.value = String(data[key as keyof typeof data])
     form.appendChild(input)
   }
 
@@ -217,7 +227,9 @@ const send = () => {
               <div class="td m_total">${{ currency(total + fare) }}</div>
             </div>
             <div class="alert" v-if="selectLogistics && fare !== 0">
-              (再買{{ currency(selectLogistics.limit_price - total) }}元即將享有免運費)
+              (再買{{
+                currency(selectLogistics.limit_price - total)
+              }}元即將享有免運費)
             </div>
           </div>
         </div>

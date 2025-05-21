@@ -1,7 +1,9 @@
-<script setup>
+<script setup lang="ts">
+import type { cartList } from '~/types'
+
 const cart = cartStore()
 const cartList = computed(() => {
-  return cart.getCartDetail
+  return cart.getCartDetail as cartList[]
 })
 
 const total = computed(() => {
@@ -14,17 +16,21 @@ const total = computed(() => {
 
 const store = cartStore()
 
-const qtyChange = (p_id, s_id, event) => {
-  store.addToCart('save', { p_id, s_id, qty: event.target.value })
+const qtyChange = (p_id: number, s_id: number, event: Event) => {
+  const target = event.target as HTMLInputElement | null
+  if (!target) return
+
+  const qty = Number(target.value)
+  store.addToCart('save', { p_id, s_id, qty })
 }
 
-const deleteProduct = (p_id, s_id) => {
+const deleteProduct = (p_id: number, s_id: number) => {
   store.addToCart('delete', { p_id, s_id })
   ElNotification({
-      title: '成功',
-      message: '已成功移除商品',
-      type: 'success',
-    })
+    title: '成功',
+    message: '已成功移除商品',
+    type: 'success',
+  })
 }
 
 const router = useRouter()

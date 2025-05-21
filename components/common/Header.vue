@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useBaseApi } from '~/composables/api'
+import type { cartList } from '~/types'
 
 const { getHeaderData } = useBaseApi()
 
@@ -18,7 +19,7 @@ const isLogin = computed(() => {
 
 const cart = cartStore()
 const cartList = computed(() => {
-  return cart.getCartDetail
+  return cart.getCartDetail as cartList[]
 })
 
 const common = commonStore()

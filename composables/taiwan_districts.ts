@@ -1,4 +1,14 @@
-export const taiwan_districts = [
+export interface District {
+  zip: string
+  name: string
+}
+
+export interface City {
+  name: string
+  districts: District[]
+}
+
+export const taiwan_districts: City[] = [
   {
     districts: [
       {
